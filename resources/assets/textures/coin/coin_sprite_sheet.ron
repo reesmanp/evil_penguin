@@ -1,0 +1,66 @@
+(
+    texture_width: 700,
+    texture_height: 467,
+    sprites: [
+        (
+            x: 25,
+            y: 310,
+            width: 75,
+            height: 75
+        ),
+        (
+            x: 105,
+            y: 310,
+            width: 75,
+            height: 75
+        ),
+        (
+            x: 185,
+            y: 310,
+            width: 70,
+            height: 75
+        ),
+        (
+            x: 260,
+            y: 310,
+            width: 65,
+            height: 75
+        ),
+        (
+            x: 335,
+            y: 310,
+            width: 40,
+            height: 75
+        ),
+        (
+            x: 385,
+            y: 310,
+            width: 20,
+            height: 75
+        ),
+        (
+            x: 415,
+            y: 310,
+            width: 40,
+            height: 75
+        ),
+        (
+            x: 460,
+            y: 310,
+            width: 65,
+            height: 75
+        ),
+        (
+            x: 525,
+            y: 310,
+            width: 70,
+            height: 75
+        ),
+        (
+            x: 600,
+            y: 310,
+            width: 75,
+            height: 75
+        )
+    ]
+)
