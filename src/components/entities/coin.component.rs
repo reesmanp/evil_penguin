@@ -5,7 +5,7 @@ use amethyst::{
     }
 };
 
-use crate::constants::COIN_TIME_PER_FRAME;
+use crate::util::constants::COIN_TIME_PER_FRAME;
 
 pub struct CoinComponent {
     pub frame: usize,

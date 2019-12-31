@@ -3,45 +3,52 @@ use amethyst::{
     core::{ArcThreadPool, Transform, math::base::Vector3},
     prelude::*,
     input::{VirtualKeyCode, is_key_down},
-    ecs::{Dispatcher, DispatcherBuilder},
+    ecs::{Dispatcher, DispatcherBuilder, Join},
     renderer::{SpriteSheet, SpriteRender, Texture, ImageFormat, SpriteSheetFormat, Camera}
 };
 
 use crate::{
     components::{
-        coin::{
-            CoinComponent
+        entities::{
+            CoinComponent,
+            PenguinComponent,
+            PlayerComponent
         },
         core::{
-            VelocityComponent
-        },
-        penguin:: {
-            PenguinComponent
-        },
-        player::{
-            PlayerComponent
+            EndConditionComponent,
+            MovementComponent
         }
-    },
-    constants::{
-        DEFAULT_WINDOW_DIMENSION_WIDTH,
-        DEFAULT_WINDOW_DIMENSION_HEIGHT,
-        DEFAULT_ARENA_WIDTH,
-        DEFAULT_ARENA_HEIGHT,
-        COIN_SPRITE_SHEET_PATH,
-        COIN_RON_PATH,
-        COIN_SPRITES_AMOUNT,
-        PENGUIN_SPRITE_SHEET_PATH,
-        PENGUIN_RON_PATH
     },
     states::GamePausedState,
     systems::{
-        coins::CoinRotationSystem,
-        penguin::PenguinMovementSystem,
-        player::PlayerMovementSystem
+        coins::{
+            CoinCollectionSystem,
+            CoinRotationSystem
+        },
+        end::{
+            EndConditionSystem
+        },
+        movement::{
+            PenguinMovementSystem,
+            PlayerMovementSystem
+        }
+    },
+    util::{
+        constants::{
+            DEFAULT_WINDOW_DIMENSION_WIDTH,
+            DEFAULT_WINDOW_DIMENSION_HEIGHT,
+            DEFAULT_ARENA_WIDTH,
+            DEFAULT_ARENA_HEIGHT,
+            COIN_SPRITE_SHEET_PATH,
+            COIN_RON_PATH,
+            COIN_SPRITES_AMOUNT,
+            PENGUIN_SPRITE_SHEET_PATH,
+            PENGUIN_RON_PATH
+        },
+        types::TextureAndRonTuple
     }
 };
 
-type TextureAndRonTuple<'a> = (&'a str, &'a str);
 
 pub struct GameRunState<'a, 'b> {
     coins: usize,
@@ -57,13 +64,15 @@ impl<'a, 'b> SimpleState for GameRunState<'a, 'b> {
         // Load Textures
         let coin_texture_handle = self.load_sprite_sheet(world, (COIN_SPRITE_SHEET_PATH, COIN_RON_PATH));
         let penguin_texture_handle = self.load_sprite_sheet(world, (PENGUIN_SPRITE_SHEET_PATH, PENGUIN_RON_PATH));
+        let player_texture_handle = self.load_sprite_sheet(world, (PENGUIN_SPRITE_SHEET_PATH, PENGUIN_RON_PATH));
 
         // Initialize State Items
         self.initialize_dispatcher(world);
         self.initialize_coins(world, coin_texture_handle);
         self.initialize_penguin(world, penguin_texture_handle);
-        self.initialize_player(world);
+        self.initialize_player(world, player_texture_handle);
         self.initialize_camera(world);
+        self.initialize_end_condition(world);
     }
 
     fn handle_event(&mut self, _data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
@@ -78,10 +87,17 @@ impl<'a, 'b> SimpleState for GameRunState<'a, 'b> {
 
     fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {
         if let Some(dispatcher) = self.dispatcher.as_mut() {
-            dispatcher.dispatch(&data.world.res);
+            dispatcher.dispatch(&data.world);
         }
 
-        Trans::None
+        let end_condition_storage = &data.world.read_storage::<EndConditionComponent>();
+        let end_condition = (end_condition_storage).join().next().unwrap();
+        if let Some(is_win) = end_condition.is_win {
+            // TODO: Handle win or lose
+            Trans::Quit
+        } else {
+            Trans::None
+        }
     }
 }
 
@@ -104,11 +120,13 @@ impl<'a, 'b> GameRunState<'a, 'b> {
         dispatcher_builder.add(CoinRotationSystem, "coin_rotation_system", &[]);
         dispatcher_builder.add(PlayerMovementSystem, "player_movement_system", &[]);
         dispatcher_builder.add(PenguinMovementSystem, "penguin_movement_system", &["player_movement_system"]);
+        dispatcher_builder.add(CoinCollectionSystem, "coin_collection_system", &["player_movement_system"]);
+        dispatcher_builder.add(EndConditionSystem, "end_condition_system", &["penguin_movement_system", "coin_collection_system"]);
 
         let mut dispatcher = dispatcher_builder
-            .with_pool(world.read_resource::<ArcThreadPool>().clone())
+            .with_pool((*world.read_resource::<ArcThreadPool>()).clone())
             .build();
-        dispatcher.setup(&mut world.res);
+        dispatcher.setup(world);
 
         self.dispatcher = Some(dispatcher);
     }
@@ -140,15 +158,22 @@ impl<'a, 'b> GameRunState<'a, 'b> {
         )
     }
 
-    fn initialize_player(&self, world: &mut World) {
+    fn initialize_player(&self, world: &mut World, sprite_sheet: Handle<SpriteSheet>) {
+        let sprite_render = SpriteRender {
+            sprite_sheet: sprite_sheet.clone(),
+            sprite_number: 0
+        };
         let mut transform = Transform::default();
-        transform.set_translation_xyz(0.0, 0.0, 0.0);
+        let xyz_position = Vector3::new(0.0, 0.0, 0.0);
+        transform.set_scale(Vector3::new(0.33, 0.33, 1.0));
+        transform.set_translation_xyz(xyz_position.x, xyz_position.y, xyz_position.z);
 
         world
             .create_entity()
             .with(transform)
             .with(PlayerComponent::default())
-            .with(VelocityComponent::new(0.0, 0.0, 0.0, 1.0, 10.0, 2.0))
+            .with(MovementComponent::new(xyz_position, Vector3::new(0.0, 0.0, 0.0), 500.0, 2.0))
+            .with(sprite_render)
             .build();
     }
 
@@ -184,26 +209,34 @@ impl<'a, 'b> GameRunState<'a, 'b> {
             sprite_number: 0
         };
         let mut transform = Transform::default();
+        let xyz_position = Vector3::new(DEFAULT_ARENA_WIDTH / 2.0, DEFAULT_ARENA_HEIGHT / 2.0, 0.0);
         transform.set_scale(Vector3::new(0.33, 0.33, 1.0));
-        transform.set_translation_xyz(50.0, 50.0, 0.0);
+        transform.set_translation_xyz(xyz_position.x, xyz_position.y, xyz_position.z);
 
         world
             .create_entity()
             .with(transform)
             .with(PenguinComponent::default())
-            .with(VelocityComponent::new(0.0, 0.0, 0.0, 1.0, 10.0, 2.0)) // TODO: make the start acceleration and max speed variable based off of difficulty
+            .with(MovementComponent::new(xyz_position, Vector3::new(0.0, 0.0, 0.0), 500.0, 2.0)) // TODO: make the start acceleration and max speed variable based off of difficulty
             .with(sprite_render)
             .build();
     }
 
     fn initialize_camera(&self, world: &mut World) {
         let mut transform = Transform::default();
-        transform.set_translation_xyz(DEFAULT_ARENA_WIDTH / 2.0, DEFAULT_ARENA_HEIGHT / 2.0, 1.0);
+        transform.set_translation_xyz(DEFAULT_ARENA_WIDTH / 2.0, DEFAULT_ARENA_HEIGHT / 2.0, 5.0);
 
         world
             .create_entity()
             .with(transform)
             .with(Camera::standard_2d(DEFAULT_ARENA_WIDTH, DEFAULT_ARENA_HEIGHT))
+            .build();
+    }
+
+    fn initialize_end_condition(&self, world: &mut World) {
+        world
+            .create_entity()
+            .with(EndConditionComponent::default())
             .build();
     }
 }

@@ -8,9 +8,9 @@ use amethyst::{
 };
 
 mod components;
-mod constants;
 mod states;
 mod systems;
+mod util;
 
 use states::GameRunState;
 

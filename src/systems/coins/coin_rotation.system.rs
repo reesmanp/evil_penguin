@@ -1,12 +1,10 @@
 use amethyst::{
     core::Time,
     ecs::{System, Read, Join, WriteStorage, Write},
-    renderer::{SpriteRender, SpriteSheet}
+    renderer::SpriteRender
 };
 
-use crate::{
-    components::coin::CoinComponent
-};
+use crate::components::entities::CoinComponent;
 
 pub struct CoinRotationSystem;
 

@@ -1,10 +1,10 @@
 // WINDOW CONSTANTS
-pub const DEFAULT_WINDOW_DIMENSION_WIDTH: usize = 500;
-pub const DEFAULT_WINDOW_DIMENSION_HEIGHT: usize = 500;
+pub const DEFAULT_WINDOW_DIMENSION_WIDTH: usize = 1000;
+pub const DEFAULT_WINDOW_DIMENSION_HEIGHT: usize = 1000;
 
 // ARENA CONSTANTS
-pub const DEFAULT_ARENA_WIDTH: f32 = 500.0;
-pub const DEFAULT_ARENA_HEIGHT: f32 = 500.0;
+pub const DEFAULT_ARENA_WIDTH: f32 = 1000.0;
+pub const DEFAULT_ARENA_HEIGHT: f32 = 1000.0;
 
 // COIN CONSTANTS
 pub const COIN_SPRITE_SHEET_PATH: &str = "textures/coin/coin_sprite_sheet.png";
