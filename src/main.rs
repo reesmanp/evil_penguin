@@ -22,10 +22,11 @@ fn main() -> amethyst::Result<()> {
     let app_root = application_root_dir()?;
     let resources_dir = app_root.join("resources");
     let assets_path = resources_dir.join("assets");
+    let config_path = resources_dir.join("config");
 
     // Config Paths
-    let display_config_path = resources_dir.join("display_config.ron");
-    let input_bindings_path = resources_dir.join("input_bindings.ron");
+    let display_config_path = config_path.join("display_config.ron");
+    let input_bindings_path = config_path.join("input_bindings.ron");
 
     // Create Bundles
     let input_bundle = InputBundle::<StringBindings>::new()
