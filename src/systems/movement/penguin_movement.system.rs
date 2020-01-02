@@ -7,12 +7,15 @@ use amethyst::{
     renderer::{SpriteSheet, SpriteRender, sprite::TextureCoordinates}
 };
 
-use crate::components::{
-    core::MovementComponent,
-    entities::{
-        PenguinComponent,
-        PlayerComponent
-    }
+use crate::{
+    components::{
+        core::MovementComponent,
+        entities::{
+            PenguinComponent,
+            PlayerComponent
+        }
+    },
+    systems::movement::EntityMovement
 };
 
 pub struct PenguinMovementSystem;
@@ -28,19 +31,27 @@ impl<'a> System<'a> for PenguinMovementSystem {
         Read<'a, AssetStorage<SpriteSheet>>
     );
 
-    fn run(&mut self, (penguin, player, sprite_renders, mut transform, mut velocity, time, spritesheet_storage): Self::SystemData) {
+    fn run(&mut self, (penguin, player, sprite_renders, mut transform, mut movement, time, spritesheet_storage): Self::SystemData) {
         let seconds = time.delta_seconds();
         let (player_transform, _) = (&transform, &player).join().next().unwrap();
         let player_translation = player_transform.translation().clone();
-        let (penguin_transform, penguin_velocity, penguin_sprite_render, _) = (&mut transform, &mut velocity, &sprite_renders, &penguin).join().next().unwrap();
-
-        let direction_vector: Vector3<f32> = (player_translation - penguin_transform.translation()).normalize();
+        let (penguin_transform, penguin_movement, penguin_sprite_render, _) = (&mut transform, &mut movement, &sprite_renders, &penguin).join().next().unwrap();
+        let penguin_translation = penguin_transform.translation().clone();
 
         if let Some(penguin_spritesheet) = spritesheet_storage.get(&penguin_sprite_render.sprite_sheet) {
             let penguin_sprite = penguin_spritesheet.sprites.get(0).unwrap();
-            penguin_velocity.accelerate(Vector3::new(direction_vector.x, direction_vector.y, 0.0), seconds, penguin_sprite, penguin_transform.scale());
-            penguin_transform.prepend_translation_x(penguin_velocity.get_delta_x());
-            penguin_transform.prepend_translation_y(penguin_velocity.get_delta_y());
+            self.transform_entity(penguin_transform, &(player_translation, penguin_translation), &time, penguin_movement, penguin_sprite);
         }
+    }
+}
+
+impl EntityMovement for PenguinMovementSystem {
+    type AccelerationDirection = (
+        Vector3<f32>,
+        Vector3<f32>
+    );
+
+    fn get_acceleration(&self, input: &Self::AccelerationDirection) -> Vector3<f32> {
+        (input.0 - input.1).normalize() * 5.0
     }
 }

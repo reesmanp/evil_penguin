@@ -164,7 +164,7 @@ impl<'a, 'b> GameRunState<'a, 'b> {
             sprite_number: 0
         };
         let mut transform = Transform::default();
-        let xyz_position = Vector3::new(0.0, 0.0, 0.0);
+        let xyz_position = Vector3::new(30.0, 30.0, 0.0);
         transform.set_scale(Vector3::new(0.33, 0.33, 1.0));
         transform.set_translation_xyz(xyz_position.x, xyz_position.y, xyz_position.z);
 
@@ -172,7 +172,7 @@ impl<'a, 'b> GameRunState<'a, 'b> {
             .create_entity()
             .with(transform)
             .with(PlayerComponent::default())
-            .with(MovementComponent::new(xyz_position, Vector3::new(0.0, 0.0, 0.0), 500.0, 2.0))
+            .with(MovementComponent::new(Vector3::new(0.0, 0.0, 0.0), 500.0, 2.0))
             .with(sprite_render)
             .build();
     }
@@ -217,7 +217,7 @@ impl<'a, 'b> GameRunState<'a, 'b> {
             .create_entity()
             .with(transform)
             .with(PenguinComponent::default())
-            .with(MovementComponent::new(xyz_position, Vector3::new(0.0, 0.0, 0.0), 500.0, 2.0)) // TODO: make the start acceleration and max speed variable based off of difficulty
+            .with(MovementComponent::new(Vector3::new(0.0, 0.0, 0.0), 500.0, 2.0)) // TODO: make the start acceleration and max speed variable based off of difficulty
             .with(sprite_render)
             .build();
     }
