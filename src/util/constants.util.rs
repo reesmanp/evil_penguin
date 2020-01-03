@@ -19,3 +19,6 @@ pub const PENGUIN_RON_PATH: &str = "textures/penguin/penguin_sprite_sheet.ron";
 // PLAYER CONSTANTS
 pub const PLAYER_SPRITE_SHEET_PATH: &str = "textures/player/player_sprite_sheet.png";
 pub const PLAYER_RON_PATH: &str = "textures/player/player_sprite_sheet.ron";
+
+// MOVEMENT CONSTANTS
+pub const DEFAULT_FRICTION: f32 = 2.0;

@@ -82,10 +82,16 @@ pub trait EntityMovement {
         crashed_velocity
     }
 
-    fn get_friction_direction_vector(&self, velocity: &Vector3<f32>, friction: f32) -> Vector3<f32> {
-        let mut friction_vector = Vector3::new(friction, friction, 0.0);
-        friction_vector.x = -1.0 * friction.copysign(velocity.x);
-        friction_vector.y = -1.0 * friction.copysign(velocity.y);
+    fn get_friction_direction_vector(&self, velocity: &Vector3<f32>, default_friction: f32) -> Vector3<f32> {
+        let mut friction_vector = Vector3::new(default_friction, default_friction, 0.0);
+        friction_vector.x = match velocity.x {
+            0.0 => 0.0,
+            vel => -1.0 * default_friction.copysign(vel)
+        };
+        friction_vector.y = match velocity.y {
+            0.0 => 0.0,
+            vel => -1.0 * default_friction.copysign(vel)
+        };
         friction_vector
     }
 

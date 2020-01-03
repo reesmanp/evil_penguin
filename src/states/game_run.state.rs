@@ -45,7 +45,8 @@ use crate::{
             PENGUIN_SPRITE_SHEET_PATH,
             PENGUIN_RON_PATH,
             PLAYER_SPRITE_SHEET_PATH,
-            PLAYER_RON_PATH
+            PLAYER_RON_PATH,
+            DEFAULT_FRICTION
         },
         types::TextureAndRonTuple
     }
@@ -174,7 +175,7 @@ impl<'a, 'b> GameRunState<'a, 'b> {
             .create_entity()
             .with(transform)
             .with(PlayerComponent::default())
-            .with(MovementComponent::new(Vector3::new(0.0, 0.0, 0.0), 500.0, 2.0))
+            .with(MovementComponent::new(Vector3::new(0.0, 0.0, 0.0), 500.0, DEFAULT_FRICTION))
             .with(sprite_render)
             .build();
     }
@@ -219,7 +220,7 @@ impl<'a, 'b> GameRunState<'a, 'b> {
             .create_entity()
             .with(transform)
             .with(PenguinComponent::default())
-            .with(MovementComponent::new(Vector3::new(0.0, 0.0, 0.0), 500.0, 2.0)) // TODO: make the start acceleration and max speed variable based off of difficulty
+            .with(MovementComponent::new(Vector3::new(0.0, 0.0, 0.0), 500.0, DEFAULT_FRICTION)) // TODO: make the start acceleration and max speed variable based off of difficulty
             .with(sprite_render)
             .build();
     }

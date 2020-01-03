@@ -127,8 +127,8 @@ pub fn get_sprite_coordinates(transform: &Transform, sprite: &Sprite) -> Texture
 
     TextureCoordinates {
         left: translation.x,
-        right: translation.x + sprite.width * scale.x * 0.5,
+        right: translation.x + sprite.width * scale.x,
         bottom: translation.y,
-        top: translation.y + sprite.height * scale.y * 0.5
+        top: translation.y + sprite.height * scale.y
     }
 }
