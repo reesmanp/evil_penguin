@@ -15,3 +15,7 @@ pub const COIN_SPRITES_AMOUNT: usize = 10; // TODO: Find better way like iterati
 // PENGUIN CONSTANTS
 pub const PENGUIN_SPRITE_SHEET_PATH: &str = "textures/penguin/penguin_sprite_sheet.png";
 pub const PENGUIN_RON_PATH: &str = "textures/penguin/penguin_sprite_sheet.ron";
+
+// PLAYER CONSTANTS
+pub const PLAYER_SPRITE_SHEET_PATH: &str = "textures/player/player_sprite_sheet.png";
+pub const PLAYER_RON_PATH: &str = "textures/player/player_sprite_sheet.ron";

@@ -62,20 +62,21 @@ pub trait EntityMovement {
         let mut crashed_velocity = velocity.clone();
 
         // Crash Scenario
-        if local_transform.translation().x < 0.0 {
-            local_transform.translation_mut().x = 0.0;
+        if local_transform.translation().x < sprite.width * 0.5 * local_transform.scale().x {
+            println!("{:?} {:?}", local_transform.translation(), sprite.width);
+            local_transform.translation_mut().x = sprite.width * 0.5 * local_transform.scale().x;
             crashed_velocity.x = 0.0;
-        } else if local_transform.translation().x + sprite.width * local_transform.scale().x > DEFAULT_ARENA_WIDTH {
-            local_transform.translation_mut().x = DEFAULT_ARENA_WIDTH - sprite.width * local_transform.scale().x;
+        } else if local_transform.translation().x + sprite.width * 0.5 * local_transform.scale().x > DEFAULT_ARENA_WIDTH {
+            local_transform.translation_mut().x = DEFAULT_ARENA_WIDTH - sprite.width * 0.5 * local_transform.scale().x;
             crashed_velocity.x = 0.0;
         }
 
         // Crash Scenario
-        if local_transform.translation().y < 0.0 {
-            local_transform.translation_mut().y = 0.0;
+        if local_transform.translation().y < sprite.height * 0.5 * local_transform.scale().y {
+            local_transform.translation_mut().y = sprite.height * 0.5 * local_transform.scale().y;
             crashed_velocity.y = 0.0;
-        } else if local_transform.translation().y + sprite.height * local_transform.scale().y > DEFAULT_ARENA_HEIGHT {
-            local_transform.translation_mut().y = DEFAULT_ARENA_HEIGHT - sprite.height * local_transform.scale().y;
+        } else if local_transform.translation().y + sprite.height * 0.5 * local_transform.scale().y > DEFAULT_ARENA_HEIGHT {
+            local_transform.translation_mut().y = DEFAULT_ARENA_HEIGHT - sprite.height * 0.5 * local_transform.scale().y;
             crashed_velocity.y = 0.0;
         }
 

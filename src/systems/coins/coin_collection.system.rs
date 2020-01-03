@@ -37,7 +37,6 @@ impl<'a> System<'a> for CoinCollectionSystem {
             spritesheet_storage.get(&coin_sprite_render.sprite_sheet)
         ) {
             for (coin_entity, coin_transform, _) in (&*entities, &transform, &coins).join() {
-                // Get actual sprites used. These spritesheets only have 1 sprite in them.
                 let player_sprite = player_spritesheet.sprites.get(0).unwrap();
                 let coin_sprite = coin_spritesheet.sprites.get(0).unwrap();
 

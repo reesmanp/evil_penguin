@@ -43,7 +43,9 @@ use crate::{
             COIN_RON_PATH,
             COIN_SPRITES_AMOUNT,
             PENGUIN_SPRITE_SHEET_PATH,
-            PENGUIN_RON_PATH
+            PENGUIN_RON_PATH,
+            PLAYER_SPRITE_SHEET_PATH,
+            PLAYER_RON_PATH
         },
         types::TextureAndRonTuple
     }
@@ -64,7 +66,7 @@ impl<'a, 'b> SimpleState for GameRunState<'a, 'b> {
         // Load Textures
         let coin_texture_handle = self.load_sprite_sheet(world, (COIN_SPRITE_SHEET_PATH, COIN_RON_PATH));
         let penguin_texture_handle = self.load_sprite_sheet(world, (PENGUIN_SPRITE_SHEET_PATH, PENGUIN_RON_PATH));
-        let player_texture_handle = self.load_sprite_sheet(world, (PENGUIN_SPRITE_SHEET_PATH, PENGUIN_RON_PATH));
+        let player_texture_handle = self.load_sprite_sheet(world, (PLAYER_SPRITE_SHEET_PATH, PLAYER_RON_PATH));
 
         // Initialize State Items
         self.initialize_dispatcher(world);
@@ -165,7 +167,7 @@ impl<'a, 'b> GameRunState<'a, 'b> {
         };
         let mut transform = Transform::default();
         let xyz_position = Vector3::new(30.0, 30.0, 0.0);
-        transform.set_scale(Vector3::new(0.33, 0.33, 1.0));
+        transform.set_scale(Vector3::new(0.125, 0.125, 1.0));
         transform.set_translation_xyz(xyz_position.x, xyz_position.y, xyz_position.z);
 
         world

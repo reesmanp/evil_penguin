@@ -1,6 +1,6 @@
 #TODO
 - [ ] Win/Lose scenario
-- [ ] Player sprite
+- [x] Player sprite
 - [ ] Main menu
 - [ ] Pause Menu
 - [ ] End game menu
