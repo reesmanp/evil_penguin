@@ -63,7 +63,6 @@ pub trait EntityMovement {
 
         // Crash Scenario
         if local_transform.translation().x < sprite.width * 0.5 * local_transform.scale().x {
-            println!("{:?} {:?}", local_transform.translation(), sprite.width);
             local_transform.translation_mut().x = sprite.width * 0.5 * local_transform.scale().x;
             crashed_velocity.x = 0.0;
         } else if local_transform.translation().x + sprite.width * 0.5 * local_transform.scale().x > DEFAULT_ARENA_WIDTH {
@@ -83,16 +82,16 @@ pub trait EntityMovement {
         crashed_velocity
     }
 
-    fn get_friction_direction_vector(&self, acceleration: &Vector3<f32>, friction: f32) -> Vector3<f32> {
+    fn get_friction_direction_vector(&self, velocity: &Vector3<f32>, friction: f32) -> Vector3<f32> {
         let mut friction_vector = Vector3::new(friction, friction, 0.0);
-        friction_vector.x = -1.0 * friction.copysign(acceleration.x);
-        friction_vector.y = -1.0 * friction.copysign(acceleration.y);
+        friction_vector.x = -1.0 * friction.copysign(velocity.x);
+        friction_vector.y = -1.0 * friction.copysign(velocity.y);
         friction_vector
     }
 
     fn transform_entity(&self, local_transform: &mut Transform, input: &Self::AccelerationDirection, time: &Time, movement: &mut MovementComponent, sprite: &Sprite) {
         let acceleration = self.get_acceleration(input);
-        let friction_vector = self.get_friction_direction_vector(&acceleration, movement.friction);
+        let friction_vector = self.get_friction_direction_vector(&movement.velocity, movement.friction);
         let new_velocity = self.calculate_new_velocity(&movement.velocity, &acceleration, &friction_vector, movement.max_speed);
         self.update_transform(local_transform, new_velocity, time);
         let crashed_velocity = self.crash(local_transform, new_velocity, sprite);
