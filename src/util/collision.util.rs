@@ -70,24 +70,22 @@ fn get_orientation(p1: (f32, f32), p2: (f32, f32), p3: (f32, f32)) -> Orientatio
 }
 
 fn do_intersect(line_1: &((f32, f32), (f32, f32)), line_2: &((f32, f32), (f32, f32))) -> bool {
-    let o1 = get_orientation(line_1.0, line_2.0, line_1.1);
-    let o2 = get_orientation(line_1.0, line_2.0, line_2.1);
-    let o3 = get_orientation(line_1.1, line_2.1, line_1.0);
-    let o4 = get_orientation(line_1.1, line_2.1, line_2.0);
+    let o1 = get_orientation(line_1.0, line_1.1, line_2.0);
+    let o2 = get_orientation(line_1.0, line_1.1, line_2.1);
+    let o3 = get_orientation(line_2.0, line_2.1, line_1.0);
+    let o4 = get_orientation(line_2.0, line_2.1, line_1.1);
 
     if o1 != o2 && o3 != o4 {
-        println!("{:?} {:?}", line_1, line_2);
-        println!("{:?} {:?} {:?} {:?}", o1, o2, o3, o4);
         return true;
     }
 
-    if o1 == Orientation::Colinear && on_segment(line_1.0, line_1.1, line_2.0) {
+    if o1 == Orientation::Colinear && on_segment(line_1.0, line_2.0, line_1.1) {
         return true;
-    } else if o2 == Orientation::Colinear && on_segment(line_1.0, line_2.1, line_2.0) {
+    } else if o2 == Orientation::Colinear && on_segment(line_1.0, line_2.1, line_1.1) {
         return true;
-    } else if o3 == Orientation::Colinear && on_segment(line_1.1, line_1.0, line_2.1) {
+    } else if o3 == Orientation::Colinear && on_segment(line_2.0, line_1.0, line_2.1) {
         return true;
-    } else if o4 == Orientation::Colinear && on_segment(line_1.1, line_2.0, line_2.1) {
+    } else if o4 == Orientation::Colinear && on_segment(line_2.0, line_1.1, line_2.1) {
         return true;
     }
 

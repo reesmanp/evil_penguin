@@ -1,6 +1,6 @@
 [package]
 name = "evil_penguin"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["Paul Reesman <paul.r.reesman@gmail.com>"]
 edition = "2018"
 
