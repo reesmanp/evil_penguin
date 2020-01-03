@@ -6,5 +6,8 @@ pub mod constants;
 pub mod types;
 
 pub use self::{
-    collision_util::*
+    collision_util::{
+        get_sprite_coordinates,
+        is_collision
+    }
 };

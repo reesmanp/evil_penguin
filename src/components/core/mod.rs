@@ -4,7 +4,7 @@ mod end_condition_component;
 mod movement_component;
 
 pub use self::{
-    end_condition_component::*,
-    movement_component::*
+    end_condition_component::EndConditionComponent,
+    movement_component::MovementComponent
 };
 

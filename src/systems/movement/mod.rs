@@ -4,8 +4,8 @@ mod penguin_system;
 mod player_movement_system;
 
 pub use self::{
-    penguin_system::*,
-    player_movement_system::*
+    penguin_system::PenguinMovementSystem,
+    player_movement_system::PlayerMovementSystem
 };
 
 use crate::{

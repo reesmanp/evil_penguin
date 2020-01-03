@@ -4,6 +4,6 @@ mod coin_collection_system;
 mod coin_rotation_system;
 
 pub use self::{
-    coin_collection_system::*,
-    coin_rotation_system::*
+    coin_collection_system::CoinCollectionSystem,
+    coin_rotation_system::CoinRotationSystem
 };

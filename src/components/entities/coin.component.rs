@@ -7,6 +7,8 @@ use amethyst::{
 
 use crate::util::constants::COIN_TIME_PER_FRAME;
 
+#[derive(Component, Default)]
+#[storage(VecStorage)]
 pub struct CoinComponent {
     pub frame: usize,
     pub frames: usize,
@@ -36,15 +38,5 @@ impl CoinComponent {
 
     pub fn update_frame(&mut self) {
         self.frame = (self.time_elapsed / self.time_per_frame) as usize % self.frames;
-    }
-}
-
-impl Component for CoinComponent {
-    type Storage = VecStorage<Self>;
-}
-
-impl Default for CoinComponent {
-    fn default() -> Self {
-        Self::new(0, 0, COIN_TIME_PER_FRAME, 0.0)
     }
 }

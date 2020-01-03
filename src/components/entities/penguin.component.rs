@@ -2,14 +2,6 @@ use amethyst::{
     ecs::{Component, HashMapStorage}
 };
 
+#[derive(Component, Default)]
+#[storage(HashMapStorage)]
 pub struct PenguinComponent;
-
-impl Default for PenguinComponent {
-    fn default() -> Self {
-        Self
-    }
-}
-
-impl Component for PenguinComponent {
-    type Storage = HashMapStorage<Self>;
-}

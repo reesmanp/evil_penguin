@@ -6,7 +6,7 @@ mod penguin_component;
 mod player_component;
 
 pub use self::{
-    coin_component::*,
-    penguin_component::*,
-    player_component::*
+    coin_component::CoinComponent,
+    penguin_component::PenguinComponent,
+    player_component::PlayerComponent
 };
