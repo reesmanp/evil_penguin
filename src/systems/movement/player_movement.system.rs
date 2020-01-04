@@ -1,10 +1,9 @@
 use amethyst::{
-    animation::InterpolationPrimitive,
     ecs::{System, WriteStorage, ReadStorage, Read, Join},
     core::{Transform, Time, math::Vector3},
     input::{InputHandler, StringBindings},
     assets::AssetStorage,
-    renderer::{SpriteSheet, SpriteRender, sprite::TextureCoordinates, Sprite}
+    renderer::{SpriteSheet, SpriteRender}
 };
 
 use crate::{
@@ -30,9 +29,6 @@ impl<'a> System<'a> for PlayerMovementSystem {
 
     fn run(&mut self, (player, sprite_renders, mut transform, mut movement, input, time, spritesheet_storage): Self::SystemData) {
         let (player_transform, player_movement, player_sprite_render, _) = (&mut transform, &mut movement, &sprite_renders, &player).join().next().unwrap();
-
-        // Time since last frame
-        let seconds = time.delta_seconds();
 
         if let Some(spritesheet) = spritesheet_storage.get(&player_sprite_render.sprite_sheet) {
             let player_sprite = spritesheet.sprites.get(0).unwrap();

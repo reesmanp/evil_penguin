@@ -5,8 +5,6 @@ use amethyst::{
     }
 };
 
-use crate::util::constants::COIN_TIME_PER_FRAME;
-
 #[derive(Component, Default)]
 #[storage(VecStorage)]
 pub struct CoinComponent {

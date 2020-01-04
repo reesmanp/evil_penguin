@@ -1,8 +1,8 @@
 use amethyst::{
-    ecs::{System, WriteStorage, ReadStorage, Write, Join, Read},
+    ecs::{System, WriteStorage, ReadStorage, Join, Read},
     core::Transform,
     assets::AssetStorage,
-    renderer::{SpriteSheet, SpriteRender, sprite::TextureCoordinates},
+    renderer::{SpriteSheet, SpriteRender},
 };
 use crate::{
     components::{

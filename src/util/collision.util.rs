@@ -3,10 +3,7 @@ use amethyst::{
         TextureCoordinates,
         Sprite
     },
-    core::{
-        transform::Transform,
-        math::Vector2
-    }
+    core::transform::Transform
 };
 
 #[derive(Eq, PartialEq, Debug)]

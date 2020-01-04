@@ -4,7 +4,7 @@ use amethyst::{
     prelude::*,
     input::{VirtualKeyCode, is_key_down},
     ecs::{Dispatcher, DispatcherBuilder, Join},
-    renderer::{SpriteSheet, SpriteRender, Texture, ImageFormat, SpriteSheetFormat, Camera}
+    renderer::{SpriteSheet, SpriteRender, Texture, ImageFormat, SpriteSheetFormat}
 };
 
 use crate::{
@@ -19,7 +19,10 @@ use crate::{
             MovementComponent
         }
     },
-    states::GamePausedState,
+    states::{
+        BaseState,
+        PausedState
+    },
     systems::{
         coins::{
             CoinCollectionSystem,
@@ -52,15 +55,14 @@ use crate::{
     }
 };
 
-
-pub struct GameRunState<'a, 'b> {
+pub struct RunState<'a, 'b> {
     coins: usize,
     coins_per_row: usize,
     dispatcher: Option<Dispatcher<'a, 'b>>,
     progress_counter: ProgressCounter
 }
 
-impl<'a, 'b> SimpleState for GameRunState<'a, 'b> {
+impl<'a, 'b> SimpleState for RunState<'a, 'b> {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
@@ -81,7 +83,7 @@ impl<'a, 'b> SimpleState for GameRunState<'a, 'b> {
     fn handle_event(&mut self, _data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
         if let StateEvent::Window(e) = &event {
             if is_key_down(&e, VirtualKeyCode::Escape) {
-                return Trans::Push(Box::new(GamePausedState));
+                return Trans::Push(Box::new(PausedState));
             }
         }
 
@@ -104,7 +106,7 @@ impl<'a, 'b> SimpleState for GameRunState<'a, 'b> {
     }
 }
 
-impl<'a, 'b> GameRunState<'a, 'b> {
+impl<'a, 'b> RunState<'a, 'b> {
     pub fn new(coins: usize, coins_per_row: usize) -> Self {
         Self {
             coins,
@@ -225,17 +227,6 @@ impl<'a, 'b> GameRunState<'a, 'b> {
             .build();
     }
 
-    fn initialize_camera(&self, world: &mut World) {
-        let mut transform = Transform::default();
-        transform.set_translation_xyz(DEFAULT_ARENA_WIDTH / 2.0, DEFAULT_ARENA_HEIGHT / 2.0, 5.0);
-
-        world
-            .create_entity()
-            .with(transform)
-            .with(Camera::standard_2d(DEFAULT_ARENA_WIDTH, DEFAULT_ARENA_HEIGHT))
-            .build();
-    }
-
     fn initialize_end_condition(&self, world: &mut World) {
         world
             .create_entity()
@@ -244,7 +235,7 @@ impl<'a, 'b> GameRunState<'a, 'b> {
     }
 }
 
-impl<'a, 'b> Default for GameRunState<'a, 'b> {
+impl<'a, 'b> Default for RunState<'a, 'b> {
     fn default() -> Self {
         Self::new_from_dimensions(
             DEFAULT_WINDOW_DIMENSION_WIDTH,
@@ -252,3 +243,5 @@ impl<'a, 'b> Default for GameRunState<'a, 'b> {
         )
     }
 }
+
+impl<'a, 'b> BaseState for RunState<'a, 'b> {}

@@ -1,6 +1,6 @@
 use amethyst::{
     core::Time,
-    ecs::{System, Read, Join, WriteStorage, Write},
+    ecs::{System, Read, Join, WriteStorage},
     renderer::SpriteRender
 };
 

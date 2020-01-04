@@ -1,8 +1,8 @@
 use amethyst::{
-    ecs::{System, WriteStorage, ReadStorage, Write, Join, Read, Entities},
+    ecs::{System, ReadStorage, Join, Read, Entities},
     core::Transform,
     assets::AssetStorage,
-    renderer::{SpriteSheet, SpriteRender, sprite::TextureCoordinates}
+    renderer::{SpriteSheet, SpriteRender}
 };
 use crate::{
     components::entities::{
@@ -45,7 +45,7 @@ impl<'a> System<'a> for CoinCollectionSystem {
                 let coin_coords = get_sprite_coordinates(coin_transform, coin_sprite);
 
                 if is_collision(player_coords, coin_coords) {
-                    entities.delete(coin_entity);
+                    entities.delete(coin_entity).unwrap();
                 }
             }
         }

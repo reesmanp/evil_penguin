@@ -1,10 +1,8 @@
 use amethyst::{
-    animation::InterpolationPrimitive,
     ecs::{System, WriteStorage, ReadStorage, Read, Join},
     core::{Transform, Time, math::Vector3},
-    input::{InputHandler, StringBindings},
     assets::AssetStorage,
-    renderer::{SpriteSheet, SpriteRender, sprite::TextureCoordinates}
+    renderer::{SpriteSheet, SpriteRender}
 };
 
 use crate::{
@@ -32,7 +30,6 @@ impl<'a> System<'a> for PenguinMovementSystem {
     );
 
     fn run(&mut self, (penguin, player, sprite_renders, mut transform, mut movement, time, spritesheet_storage): Self::SystemData) {
-        let seconds = time.delta_seconds();
         let (player_transform, _) = (&transform, &player).join().next().unwrap();
         let player_translation = player_transform.translation().clone();
         let (penguin_transform, penguin_movement, penguin_sprite_render, _) = (&mut transform, &mut movement, &sprite_renders, &penguin).join().next().unwrap();

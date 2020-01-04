@@ -84,13 +84,13 @@ pub trait EntityMovement {
 
     fn get_friction_direction_vector(&self, velocity: &Vector3<f32>, default_friction: f32) -> Vector3<f32> {
         let mut friction_vector = Vector3::new(default_friction, default_friction, 0.0);
-        friction_vector.x = match velocity.x {
-            0.0 => 0.0,
-            vel => -1.0 * default_friction.copysign(vel)
+        friction_vector.x = match velocity.x == 0.0 {
+            true => 0.0,
+            false => -1.0 * default_friction.copysign(velocity.x)
         };
-        friction_vector.y = match velocity.y {
-            0.0 => 0.0,
-            vel => -1.0 * default_friction.copysign(vel)
+        friction_vector.y = match velocity.y == 0.0 {
+            true => 0.0,
+            false => -1.0 * default_friction.copysign(velocity.y)
         };
         friction_vector
     }
@@ -99,13 +99,13 @@ pub trait EntityMovement {
         let acceleration = self.get_acceleration(input);
         let friction_vector = self.get_friction_direction_vector(&movement.velocity, movement.friction);
         let new_velocity = self.calculate_new_velocity(&movement.velocity, &acceleration, &friction_vector, movement.max_speed);
-        self.update_transform(local_transform, new_velocity, time);
+        self.update_transform(local_transform, new_velocity.clone(), time);
         let crashed_velocity = self.crash(local_transform, new_velocity, sprite);
         movement.velocity = crashed_velocity;
     }
 
     fn update_transform(&self, local_transform: &mut Transform, velocity: Vector3<f32>, time: &Time) {
-        let old_position = local_transform.translation();
+        let old_position = local_transform.translation().clone();
         let new_position = local_transform.translation() + velocity * time.delta_seconds();
         local_transform.prepend_translation(new_position - old_position);
     }
