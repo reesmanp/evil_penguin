@@ -91,18 +91,20 @@ impl<'a, 'b> SimpleState for RunState<'a, 'b> {
     }
 
     fn update(&mut self, data: &mut StateData<GameData>) -> SimpleTrans {
-        if let Some(dispatcher) = self.dispatcher.as_mut() {
-            dispatcher.dispatch(&data.world);
+        if self.progress_counter.is_complete() {
+            if let Some(dispatcher) = self.dispatcher.as_mut() {
+                dispatcher.dispatch(&data.world);
+            }
+
+            let end_condition_storage = &data.world.read_storage::<EndConditionComponent>();
+            let end_condition = (end_condition_storage).join().next().unwrap();
+            if let Some(is_win) = end_condition.is_win {
+                // TODO: Handle win or lose
+                return Trans::Quit;
+            }
         }
 
-        let end_condition_storage = &data.world.read_storage::<EndConditionComponent>();
-        let end_condition = (end_condition_storage).join().next().unwrap();
-        if let Some(is_win) = end_condition.is_win {
-            // TODO: Handle win or lose
-            Trans::Quit
-        } else {
-            Trans::None
-        }
+        Trans::None
     }
 }
 

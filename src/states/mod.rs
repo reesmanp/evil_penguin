@@ -20,11 +20,15 @@ use crate::{
 
 use amethyst::{
     core::Transform,
+    ecs::{
+        Entity
+    },
     prelude::*,
     renderer::{
         Camera
     }
 };
+use std::collections::HashMap;
 
 pub trait BaseState {
     fn initialize_camera(&self, world: &mut World) {
@@ -38,4 +42,11 @@ pub trait BaseState {
             .with(Camera::standard_2d(DEFAULT_ARENA_WIDTH, DEFAULT_ARENA_HEIGHT))
             .build();
     }
+}
+
+pub struct Menu {
+    pub id: String,
+    pub title: Option<Entity>,
+    pub text: Option<HashMap<String, Entity>>,
+    pub buttons: Option<HashMap<String, Entity>>
 }
