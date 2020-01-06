@@ -1,3 +1,5 @@
+#[path = "loading.state.rs"]
+mod loading_state;
 #[path = "paused.state.rs"]
 mod paused_state;
 #[path = "run.state.rs"]
@@ -6,26 +8,32 @@ mod run_state;
 mod start_menu_state;
 
 pub use self::{
+    loading_state::{LoadingState, NextLoadingState},
     paused_state::PausedState,
     run_state::RunState,
     start_menu_state::StartMenuState
 };
 
 use crate::{
-    util::constants::{
-        DEFAULT_ARENA_WIDTH,
-        DEFAULT_ARENA_HEIGHT
+    util::{
+        constants::{
+            DEFAULT_ARENA_WIDTH,
+            DEFAULT_ARENA_HEIGHT
+        },
+        types::SpritesheetLoadingData
     }
 };
 
 use amethyst::{
+    assets::Handle,
     core::Transform,
     ecs::{
         Entity
     },
     prelude::*,
     renderer::{
-        Camera
+        Camera,
+        SpriteSheet
     }
 };
 use std::collections::HashMap;
@@ -42,6 +50,9 @@ pub trait BaseState {
             .with(Camera::standard_2d(DEFAULT_ARENA_WIDTH, DEFAULT_ARENA_HEIGHT))
             .build();
     }
+
+    fn get_dependent_spritesheets() -> Vec<SpritesheetLoadingData<'static>>;
+    fn set_dependent_spritesheet_handles(&mut self, handle_map: &mut HashMap<String, Handle<SpriteSheet>>);
 }
 
 pub struct Menu {

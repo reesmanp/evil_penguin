@@ -8,6 +8,7 @@ use crate::{
     components::{
         core::EndConditionComponent,
         entities::{
+            CoinComponent,
             PenguinComponent,
             PlayerComponent
         }
@@ -22,6 +23,7 @@ pub struct EndConditionSystem;
 
 impl<'a> System<'a> for EndConditionSystem {
     type SystemData = (
+        ReadStorage<'a, CoinComponent>,
         ReadStorage<'a, PlayerComponent>,
         ReadStorage<'a, PenguinComponent>,
         ReadStorage<'a, Transform>,
@@ -30,10 +32,16 @@ impl<'a> System<'a> for EndConditionSystem {
         Read<'a, AssetStorage<SpriteSheet>>
     );
 
-    fn run(&mut self, (player, penguin, transform, sprite_renders, mut end_condition, spritesheet_storage): Self::SystemData) {
+    fn run(&mut self, (coin, player, penguin, transform, sprite_renders, mut end_condition, spritesheet_storage): Self::SystemData) {
+        let mut end_condition_instance = (&mut end_condition).join().next().unwrap();
+
+        if (&coin).join().next().is_none() {
+            end_condition_instance.is_win = Some(true);
+            return;
+        }
+
         let (player_transform, player_sprite_render, _) = (&transform, &sprite_renders, &player).join().next().unwrap();
         let (penguin_transform, penguin_sprite_render, _) = (&transform, &sprite_renders, &penguin).join().next().unwrap();
-        let mut end_condition_instance = (&mut end_condition).join().next().unwrap();
 
         // Get spritesheets
         if let (Some(player_spritesheet), Some(penguin_spritesheet)) = (

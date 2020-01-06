@@ -51,31 +51,30 @@ use crate::{
             PLAYER_RON_PATH,
             DEFAULT_FRICTION
         },
-        types::TextureAndRonTuple
+        types::SpritesheetLoadingData
     }
 };
+use std::collections::HashMap;
 
 pub struct RunState<'a, 'b> {
     coins: usize,
     coins_per_row: usize,
     dispatcher: Option<Dispatcher<'a, 'b>>,
-    progress_counter: ProgressCounter
+    progress_counter: ProgressCounter,
+    coin_texture_handle: Option<Handle<SpriteSheet>>,
+    penguin_texture_handle: Option<Handle<SpriteSheet>>,
+    player_texture_handle: Option<Handle<SpriteSheet>>
 }
 
 impl<'a, 'b> SimpleState for RunState<'a, 'b> {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
-        // Load Textures
-        let coin_texture_handle = self.load_sprite_sheet(world, (COIN_SPRITE_SHEET_PATH, COIN_RON_PATH));
-        let penguin_texture_handle = self.load_sprite_sheet(world, (PENGUIN_SPRITE_SHEET_PATH, PENGUIN_RON_PATH));
-        let player_texture_handle = self.load_sprite_sheet(world, (PLAYER_SPRITE_SHEET_PATH, PLAYER_RON_PATH));
-
-        // Initialize State Items
+        // Initialize Dispatcher
         self.initialize_dispatcher(world);
-        self.initialize_coins(world, coin_texture_handle);
-        self.initialize_penguin(world, penguin_texture_handle);
-        self.initialize_player(world, player_texture_handle);
+        self.initialize_coins(world);
+        self.initialize_penguin(world);
+        self.initialize_player(world);
         self.initialize_camera(world);
         self.initialize_end_condition(world);
     }
@@ -114,7 +113,10 @@ impl<'a, 'b> RunState<'a, 'b> {
             coins,
             coins_per_row,
             dispatcher: None,
-            progress_counter: ProgressCounter::new()
+            progress_counter: ProgressCounter::new(),
+            coin_texture_handle: None,
+            penguin_texture_handle: None,
+            player_texture_handle: None
         }
     }
 
@@ -138,36 +140,9 @@ impl<'a, 'b> RunState<'a, 'b> {
         self.dispatcher = Some(dispatcher);
     }
 
-    fn load_sprite_sheet(
-        &mut self,
-        world: &mut World,
-        (sprite_sheet_path, ron_path): TextureAndRonTuple
-    ) -> Handle<SpriteSheet>
-    {
-        let texture_handle = {
-            let loader = world.read_resource::<Loader>();
-            let texture_storage = world.read_resource::<AssetStorage<Texture>>();
-            loader.load(
-                sprite_sheet_path,
-                ImageFormat::default(),
-                &mut self.progress_counter,
-                &texture_storage
-            )
-        };
-
-        let loader = world.read_resource::<Loader>();
-        let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
-        loader.load(
-            ron_path,
-            SpriteSheetFormat(texture_handle),
-            &mut self.progress_counter,
-            &sprite_sheet_store
-        )
-    }
-
-    fn initialize_player(&self, world: &mut World, sprite_sheet: Handle<SpriteSheet>) {
+    fn initialize_player(&self, world: &mut World) {
         let sprite_render = SpriteRender {
-            sprite_sheet: sprite_sheet.clone(),
+            sprite_sheet: self.player_texture_handle.as_ref().unwrap().clone(),
             sprite_number: 0
         };
         let mut transform = Transform::default();
@@ -184,9 +159,9 @@ impl<'a, 'b> RunState<'a, 'b> {
             .build();
     }
 
-    fn initialize_coins(&self, world: &mut World, sprite_sheet: Handle<SpriteSheet>) {
+    fn initialize_coins(&self, world: &mut World) {
         let sprite_render = SpriteRender {
-            sprite_sheet: sprite_sheet.clone(),
+            sprite_sheet: self.coin_texture_handle.as_ref().unwrap().clone(),
             sprite_number: 0
         };
 
@@ -200,7 +175,6 @@ impl<'a, 'b> RunState<'a, 'b> {
             let mut coin = CoinComponent::default();
             coin.frames = COIN_SPRITES_AMOUNT;
 
-            // TODO: detect row and column for coin <-- why?
             world
                 .create_entity()
                 .with(transform)
@@ -210,9 +184,9 @@ impl<'a, 'b> RunState<'a, 'b> {
         }
     }
 
-    fn initialize_penguin(&self, world: &mut World, sprite_sheet: Handle<SpriteSheet>) {
+    fn initialize_penguin(&self, world: &mut World) {
         let sprite_render = SpriteRender {
-            sprite_sheet: sprite_sheet.clone(),
+            sprite_sheet: self.penguin_texture_handle.as_ref().unwrap().clone(),
             sprite_number: 0
         };
         let mut transform = Transform::default();
@@ -246,4 +220,18 @@ impl<'a, 'b> Default for RunState<'a, 'b> {
     }
 }
 
-impl<'a, 'b> BaseState for RunState<'a, 'b> {}
+impl<'a, 'b> BaseState for RunState<'a, 'b> {
+    fn get_dependent_spritesheets() -> Vec<SpritesheetLoadingData<'static>> {
+        vec![
+            ("coin", COIN_SPRITE_SHEET_PATH, COIN_RON_PATH),
+            ("penguin", PENGUIN_SPRITE_SHEET_PATH, PENGUIN_RON_PATH),
+            ("player", PLAYER_SPRITE_SHEET_PATH, PLAYER_RON_PATH)
+        ]
+    }
+
+    fn set_dependent_spritesheet_handles(&mut self, handle_map: &mut HashMap<String, Handle<SpriteSheet>>) {
+        self.coin_texture_handle = handle_map.remove("coin").take();
+        self.penguin_texture_handle = handle_map.remove("penguin").take();
+        self.player_texture_handle = handle_map.remove("player").take();
+    }
+}

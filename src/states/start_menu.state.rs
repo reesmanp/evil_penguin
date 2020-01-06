@@ -1,20 +1,25 @@
 use amethyst::{
-    assets::{Loader, ProgressCounter},
+    assets::{Loader, ProgressCounter, Handle},
     core::ArcThreadPool,
     ecs::{Dispatcher, DispatcherBuilder},
     input::{VirtualKeyCode, is_key_down},
     prelude::*,
+    renderer::SpriteSheet,
     ui::{UiTransform, Anchor, UiText, TtfFormat, FontHandle}
 };
 
 use crate::{
     states::{
         BaseState,
+        LoadingState,
         Menu,
-        RunState
+        NextLoadingState,
     },
     systems::menu::TitleBlinkSystem,
-    util::constants::{DEFAULT_ARENA_WIDTH, DEFAULT_ARENA_HEIGHT, SQUARE_FONT_PATH}
+    util::{
+        constants::{DEFAULT_ARENA_WIDTH, DEFAULT_ARENA_HEIGHT, SQUARE_FONT_PATH},
+        types::SpritesheetLoadingData
+    }
 };
 
 use std::collections::HashMap;
@@ -50,7 +55,7 @@ impl<'a, 'b> SimpleState for StartMenuState<'a, 'b> {
     fn handle_event(&mut self, _data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
         if let StateEvent::Window(e) = &event {
             if is_key_down(&e, VirtualKeyCode::Return) || is_key_down(&e, VirtualKeyCode::NumpadEnter) {
-                return Trans::Switch(Box::new(RunState::default()));
+                return Trans::Switch(Box::new(LoadingState::new(NextLoadingState::Run)));
             }
         }
 
@@ -141,4 +146,10 @@ impl<'a, 'b> StartMenuState<'a, 'b> {
     }
 }
 
-impl<'a, 'b> BaseState for StartMenuState<'a,'b> {}
+impl<'a, 'b> BaseState for StartMenuState<'a,'b> {
+    fn get_dependent_spritesheets() -> Vec<SpritesheetLoadingData<'static>> {
+        vec![]
+    }
+
+    fn set_dependent_spritesheet_handles(&mut self, handle_map: &mut HashMap<String, Handle<SpriteSheet>>) {}
+}
