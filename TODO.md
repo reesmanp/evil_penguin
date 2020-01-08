@@ -2,7 +2,12 @@
 - [ ] Win/Lose scenario
 - [x] Player sprite
 - [ ] Main menu
+  - [X] Title Menu
+  - [ ] Main Menu
+  - [ ] How to Play Menu
+  - [ ] Settings Menu
+  - [ ] Play Menu
 - [ ] Pause Menu
 - [ ] End game menu
 - [ ] Configurable difficulty
-  - [ ] Lambda SARSA as hardest mode
+  - [ ] TD SARSA as hardest mode
