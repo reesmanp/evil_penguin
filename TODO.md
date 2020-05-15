@@ -1,5 +1,5 @@
 #TODO
-- [ ] Win/Lose scenario
+- [x] Win/Lose scenario
 - [x] Player sprite
 - [ ] Main menu
   - [X] Title Menu
@@ -8,6 +8,6 @@
   - [ ] Settings Menu
   - [ ] Play Menu
 - [ ] Pause Menu
-- [ ] End game menu
+- [x] End game menu
 - [ ] Configurable difficulty
-  - [ ] TD SARSA as hardest mode
+  - [ ] Machine learned difficulty as hardest
