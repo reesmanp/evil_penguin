@@ -1,17 +1,24 @@
 #[path = "loading.state.rs"]
 mod loading_state;
+#[path = "lose_menu.state.rs"]
+mod lose_menu_state;
 #[path = "paused.state.rs"]
 mod paused_state;
 #[path = "run.state.rs"]
 mod run_state;
 #[path = "start_menu.state.rs"]
 mod start_menu_state;
+#[path = "win_menu.state.rs"]
+mod win_menu_state;
 
 pub use self::{
     loading_state::{LoadingState, NextLoadingState},
+    lose_menu_state::LoseMenuState,
     paused_state::PausedState,
     run_state::RunState,
-    start_menu_state::StartMenuState
+    start_menu_state::StartMenuState,
+    start_menu_state::MenuEntities,
+    win_menu_state::WinMenuState
 };
 
 use crate::{
@@ -27,9 +34,7 @@ use crate::{
 use amethyst::{
     assets::Handle,
     core::Transform,
-    ecs::{
-        Entity
-    },
+    ecs::Entity,
     prelude::*,
     renderer::{
         Camera,
@@ -51,13 +56,10 @@ pub trait BaseState {
             .build();
     }
 
-    fn get_dependent_spritesheets() -> Vec<SpritesheetLoadingData<'static>>;
-    fn set_dependent_spritesheet_handles(&mut self, handle_map: &mut HashMap<String, Handle<SpriteSheet>>);
-}
+    fn get_dependent_spritesheets() -> Vec<SpritesheetLoadingData<'static>> {
+        vec![]
+    }
 
-pub struct Menu {
-    pub id: String,
-    pub title: Option<Entity>,
-    pub text: Option<HashMap<String, Entity>>,
-    pub buttons: Option<HashMap<String, Entity>>
+    fn set_dependent_spritesheet_handles(&mut self, handle_map: &mut HashMap<String, Handle<SpriteSheet>>) {
+    }
 }

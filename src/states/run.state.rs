@@ -55,6 +55,7 @@ use crate::{
     }
 };
 use std::collections::HashMap;
+use crate::states::{LoadingState, NextLoadingState};
 
 pub struct RunState<'a, 'b> {
     coins: usize,
@@ -98,12 +99,15 @@ impl<'a, 'b> SimpleState for RunState<'a, 'b> {
             let end_condition_storage = &data.world.read_storage::<EndConditionComponent>();
             let end_condition = (end_condition_storage).join().next().unwrap();
             if let Some(is_win) = end_condition.is_win {
-                // TODO: Handle win or lose
-                return Trans::Quit;
+                return Trans::Switch(Box::new(LoadingState::new(NextLoadingState::EndMenu(is_win))))
             }
         }
 
         Trans::None
+    }
+
+    fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>) {
+        data.world.delete_all();
     }
 }
 

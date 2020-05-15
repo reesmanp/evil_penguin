@@ -1,0 +1,43 @@
+#![enable(implicit_some)]
+Container(
+    transform: (
+        id: "background",
+        anchor: Middle
+    ),
+    background: SolidColor(0.0, 0.0, 0.0, 1.0),
+    children: [
+        Label(
+            transform: (
+                id: "title",
+                anchor: Middle,
+                x: 0.0,
+                y: 100.0,
+                z: 1.0,
+                height: 100.0,
+                width: 500.0
+            ),
+            text: (
+                text: "YOU WON!",
+                font_size: 50,
+                color: (1.0, 1.0, 1.0, 1.0),
+                align: Middle
+            )
+        ),
+        Label(
+            transform: (
+                id: "text",
+                anchor: Middle,
+                x: 0.0,
+                y: 0.0,
+                z: 1.0,
+                height: 50.0,
+                width: 500.0
+            ),
+            text: (
+                text: "<< Press ENTER to play again >>",
+                font_size: 20,
+                color: (1.0, 1.0, 1.0, 1.0)
+            )
+        )
+    ]
+)

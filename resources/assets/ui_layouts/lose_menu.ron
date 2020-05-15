@@ -1,0 +1,77 @@
+#![enable(implicit_some)]
+Container(
+    transform: (
+        id: "background",
+        anchor: Middle
+    ),
+    background: SolidColor(0.0, 0.0, 0.0, 1.0),
+    children: [
+        Label(
+            transform: (
+                id: "title",
+                anchor: Middle,
+                x: 0.0,
+                y: 150.0,
+                z: 1.0,
+                height: 100.0,
+                width: 700.0
+            ),
+            text: (
+                text: "THE PENGUIN EATED YOU!",
+                font_size: 50,
+                color: (1.0, 1.0, 1.0, 1.0),
+                align: Middle
+            )
+        ),
+        Label(
+            transform: (
+                id: "sub_title",
+                anchor: Middle,
+                x: 0.0,
+                y: 50.0,
+                z: 1.0,
+                height: 100.0,
+                width: 500.0
+            ),
+            text: (
+                text: "YOU LOST!",
+                font_size: 50,
+                color: (1.0, 1.0, 1.0, 1.0),
+                align: Middle
+            )
+        ),
+        Label(
+            transform: (
+                id: "funny_test",
+                anchor: Middle,
+                x: 0.0,
+                y: 100.0,
+                z: 1.0,
+                height: 50.0,
+                width: 500.0
+            ),
+            text: (
+                text: "(Om Nom Nom...)",
+                font_size: 15,
+                color: (1.0, 1.0, 1.0, 1.0),
+                align: Middle
+            )
+        ),
+        Label(
+            transform: (
+                id: "text",
+                anchor: Middle,
+                x: 0.0,
+                y: -50.0,
+                z: 1.0,
+                height: 50.0,
+                width: 500.0
+            ),
+            text: (
+                text: "<< Press ENTER to play again >>",
+                font_size: 20,
+                color: (1.0, 1.0, 1.0, 1.0)
+            )
+        )
+    ]
+)

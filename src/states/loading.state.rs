@@ -12,7 +12,9 @@ use amethyst::{
 use crate::{
     states::{
         BaseState,
-        RunState
+        LoseMenuState,
+        RunState,
+        WinMenuState
     },
     util::types::SpritesheetLoadingData
 };
@@ -22,7 +24,8 @@ use std::collections::HashMap;
 pub enum NextLoadingState {
     Paused,
     Run,
-    StartMenu
+    StartMenu,
+    EndMenu(bool)
 }
 
 pub struct LoadingState {
@@ -43,7 +46,8 @@ impl SimpleState for LoadingState {
                     self.load_sprite_sheet(world, tuple)
                 }
             },
-            NextLoadingState::StartMenu => {}
+            NextLoadingState::StartMenu => {},
+            NextLoadingState::EndMenu(_) => {}
         }
     }
 
@@ -56,7 +60,14 @@ impl SimpleState for LoadingState {
                     run_state.set_dependent_spritesheet_handles(&mut self.loading_assets);
                     return Trans::Switch(Box::new(run_state))
                 },
-                NextLoadingState::StartMenu => return Trans::None
+                NextLoadingState::StartMenu => return Trans::None,
+                NextLoadingState::EndMenu(is_win) => {
+                    if is_win {
+                        return Trans::Switch(Box::new(WinMenuState::default()));
+                    }
+
+                    return Trans::Switch(Box::new(LoseMenuState::default()));
+                }
             }
         }
 

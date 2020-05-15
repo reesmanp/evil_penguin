@@ -46,7 +46,6 @@ fn main() -> amethyst::Result<()> {
         .with_bundle(ui_bundle)?;
 
     // Create Starting State
-    let run_state = RunState::default();
     let start_menu_state = StartMenuState::default();
 
     // Create Game

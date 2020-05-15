@@ -1,0 +1,38 @@
+#![enable(implicit_some)]
+Container(
+    transform: (
+        id: "main_background",
+        anchor: Middle
+    ),
+    background: SolidColor(0.0, 0.0, 0.0, 1.0),
+    children: [
+        Label(
+            transform: (
+                id: "main_title",
+                anchor: Middle,
+                x: 0.0,
+                y: 100.0,
+                z: 1.0,
+                height: 100.0,
+                width: 500.0
+            ),
+            text: (
+                text: "Evil Penguin",
+                font_size: 50,
+                color: (1.0, 1.0, 1.0, 1.0),
+                align: Middle
+            )
+        ),
+        Container(
+            transform: (
+                id: "main_button_group",
+                anchor: Middle
+            ),
+            background: SolidColor(0.0, 0.0, 0.0, 1.0),
+            children: [
+                Button(
+                )
+            ]
+        )
+    ]
+)

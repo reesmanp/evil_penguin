@@ -22,6 +22,7 @@ use crate::{
 };
 
 use std::collections::HashMap;
+use crate::states::MenuEntities;
 
 enum FontSize {
     SMALL = 10,
@@ -31,13 +32,13 @@ enum FontSize {
 }
 
 #[derive(Default)]
-pub struct StartMenuState<'a, 'b> {
+pub struct WinMenuState<'a, 'b> {
     font: Option<FontHandle>,
     dispatcher: Option<Dispatcher<'a, 'b>>,
     progress_counter: ProgressCounter
 }
 
-impl<'a, 'b> SimpleState for StartMenuState<'a, 'b> {
+impl<'a, 'b> SimpleState for WinMenuState<'a, 'b> {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
@@ -71,10 +72,10 @@ impl<'a, 'b> SimpleState for StartMenuState<'a, 'b> {
     }
 }
 
-impl<'a, 'b> StartMenuState<'a, 'b> {
+impl<'a, 'b> WinMenuState<'a, 'b> {
     fn initialize_dispatcher(&mut self, world: &mut World) {
         let mut dispatcher_builder = DispatcherBuilder::new();
-        dispatcher_builder.add(MenuBlinkSystem, "title_blink_system", &[]);
+        dispatcher_builder.add(MenuBlinkSystem, "win_blink_system", &[]);
 
         let mut dispatcher = dispatcher_builder
             .with_pool((*world.read_resource::<ArcThreadPool>()).clone())
@@ -96,7 +97,7 @@ impl<'a, 'b> StartMenuState<'a, 'b> {
     fn initialize_menu(&self, world: &mut World) {
         let (top_level_entity, progress_counter) = world.exec(|mut creator: UiCreator<'_>| {
             let mut progress_counter = ProgressCounter::new();
-            let main_prefab_entity = creator.create("ui_layouts/title_menu.ron", &mut progress_counter);
+            let main_prefab_entity = creator.create("ui_layouts/win_menu.ron", &mut progress_counter);
             (main_prefab_entity, progress_counter)
         });
         let mut top_level_entities = HashMap::new();
@@ -134,12 +135,5 @@ impl<'a, 'b> StartMenuState<'a, 'b> {
     }
 }
 
-impl<'a, 'b> BaseState for StartMenuState<'a,'b> {
-}
-
-// TODO: move this to a better location
-pub struct MenuEntities {
-    pub top_level_entities: HashMap<String, Entity>, // TODO: put at state level maybe
-    pub essential_entities: HashMap<String, Entity>,
-    pub progress_counters: HashMap<String, ProgressCounter>
+impl<'a, 'b> BaseState for WinMenuState<'a,'b> {
 }
