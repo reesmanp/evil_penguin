@@ -1,4 +1,5 @@
 language: rust
+cache: cargo
 os:
   - osx
   - windows
@@ -11,11 +12,14 @@ script:
   - cargo build -Z features=itarget --release
 after_script:
   - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install zip ; fi
-  - zip -r artifacts/${PROJECT_NAME}-${TRAVIS_OS_NAME}-${TRAVIS_BUILD_NUMBER}.zip target resources
-addons:
-  artifacts:
-    s3_region: "us-west-2"
-    paths:
-      - ./artifacts
-    target_paths:
-      - /$TRAVIS_BUILD_NUMBER
+  - zip -r ${PROJECT_NAME}-${TRAVIS_OS_NAME}-${TRAVIS_BUILD_NUMBER}.zip target resources
+before_deploy:
+  # Set up git user name and tag this commit
+  - git config --local user.name "Paul Reesman"
+  - git config --local user.email "paul.r.reesman@gmail.com"
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+  - git tag $TRAVIS_TAG
+deploy:
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  file: ${PROJECT_NAME}-${TRAVIS_OS_NAME}-${TRAVIS_BUILD_NUMBER}.zip
