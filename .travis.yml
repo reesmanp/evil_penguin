@@ -7,11 +7,15 @@ branches:
     - master
 rust:
   - nightly
+script:
+  - cargo build -Z features=itarget --release
+after_script:
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install zip ; fi
+  - zip -r artifacts/${PROJECT_NAME}-${TRAVIS_OS_NAME}-${TRAVIS_BUILD_NUMBER}.zip target resources
 addons:
   artifacts:
     s3_region: "us-west-2"
     paths:
-      - "./target"
-      - "./resources"
-script:
-  cargo build -Z features=itarget --release
+      - ./artifacts
+    target_paths:
+      - /$TRAVIS_BUILD_NUMBER

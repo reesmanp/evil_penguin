@@ -6,7 +6,6 @@ edition = "2018"
 
 [dependencies]
 const-concat = { git = "https://github.com/reesmanp/const-concat" }
-serde = { version = "1.0", features = ["derive"] }
 
 [target.'cfg(target_os = "windows")'.dependencies.amethyst]
 version = "^0.15.0"
