@@ -11,14 +11,19 @@ rust:
 script:
   - cargo build -Z features=itarget --release
 before_deploy:
-  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install zip ; fi
-  - zip -r ${PROJECT_NAME}-${TRAVIS_OS_NAME}-${TRAVIS_BUILD_NUMBER}.zip target resources
   # Set up git user name and tag this commit
   - git config --local user.name "Paul Reesman"
   - git config --local user.email "paul.r.reesman@gmail.com"
   - export TRAVIS_TAG=v${TRAVIS_BUILD_NUMBER}-${TRAVIS_OS_NAME}
   - git tag $TRAVIS_TAG
+  # Create artifact
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then choco install zip ; fi
+  - export EXE_NAME=${PROJECT_NAME}
+  - if [ "$TRAVIS_OS_NAME" = "windows" ]; then export EXE_NAME=${EXE_NAME}.exe ; fi
+  - export NAME=${PROJECT_NAME}-${TRAVIS_TAG}
+  - zip -r ${NAME}.zip target/release/${EXE_NAME} resources
 deploy:
+  skip_cleanup: true
   provider: releases
   api_key: $GITHUB_OAUTH_TOKEN
-  file: ${PROJECT_NAME}-${TRAVIS_OS_NAME}-${TRAVIS_BUILD_NUMBER}.zip
+  file: ${NAME}.zip
