@@ -33,31 +33,31 @@ impl<'a> System<'a> for EndConditionSystem {
     );
 
     fn run(&mut self, (coin, player, penguin, transform, sprite_renders, mut end_condition, spritesheet_storage): Self::SystemData) {
-        let mut end_condition_instance = (&mut end_condition).join().next().unwrap();
+        if let Some(mut end_condition_instance) = (&mut end_condition).join().next() {
+            if (&coin).join().next().is_none() {
+                end_condition_instance.is_win = Some(true);
+                return;
+            }
 
-        if (&coin).join().next().is_none() {
-            end_condition_instance.is_win = Some(true);
-            return;
-        }
+            let (player_transform, player_sprite_render, _) = (&transform, &sprite_renders, &player).join().next().unwrap();
+            let (penguin_transform, penguin_sprite_render, _) = (&transform, &sprite_renders, &penguin).join().next().unwrap();
 
-        let (player_transform, player_sprite_render, _) = (&transform, &sprite_renders, &player).join().next().unwrap();
-        let (penguin_transform, penguin_sprite_render, _) = (&transform, &sprite_renders, &penguin).join().next().unwrap();
+            // Get spritesheets
+            if let (Some(player_spritesheet), Some(penguin_spritesheet)) = (
+                spritesheet_storage.get(&player_sprite_render.sprite_sheet),
+                spritesheet_storage.get(&penguin_sprite_render.sprite_sheet)
+            ) {
+                // Get actual sprites used. These spritesheets only have 1 sprite in them.
+                let player_sprite = player_spritesheet.sprites.get(0).unwrap();
+                let penguin_sprite = penguin_spritesheet.sprites.get(0).unwrap();
 
-        // Get spritesheets
-        if let (Some(player_spritesheet), Some(penguin_spritesheet)) = (
-            spritesheet_storage.get(&player_sprite_render.sprite_sheet),
-            spritesheet_storage.get(&penguin_sprite_render.sprite_sheet)
-        ) {
-            // Get actual sprites used. These spritesheets only have 1 sprite in them.
-            let player_sprite = player_spritesheet.sprites.get(0).unwrap();
-            let penguin_sprite = penguin_spritesheet.sprites.get(0).unwrap();
+                // Get entity coordinates
+                let player_coords = get_sprite_coordinates(player_transform, player_sprite);
+                let penguin_coords = get_sprite_coordinates(penguin_transform, penguin_sprite);
 
-            // Get entity coordinates
-            let player_coords = get_sprite_coordinates(player_transform, player_sprite);
-            let penguin_coords = get_sprite_coordinates(penguin_transform, penguin_sprite);
-
-            if is_collision(player_coords, penguin_coords) {
-                end_condition_instance.is_win = Some(false);
+                if is_collision(player_coords, penguin_coords) {
+                    end_condition_instance.is_win = Some(false);
+                }
             }
         }
     }

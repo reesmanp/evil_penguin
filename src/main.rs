@@ -14,8 +14,7 @@ mod states;
 mod systems;
 mod util;
 
-use states::RunState;
-use states::StartMenuState;
+use states::menu::StartMenuState;
 use util::constants::{
     ASSETS_PATH,
     DISPLAY_CONFIG_PATH,
@@ -31,7 +30,7 @@ fn main() -> amethyst::Result<()> {
         .with_bindings_from_file(INPUT_BINDINGS_PATH)?;
     let transform_bundle = TransformBundle::new();
     let rendering_bundle = RenderingBundle::<DefaultBackend>::new()
-        .with_plugin(RenderToWindow::from_config_path(DISPLAY_CONFIG_PATH)
+        .with_plugin(RenderToWindow::from_config_path(DISPLAY_CONFIG_PATH)?
                          .with_clear([0.0, 0.0, 0.0, 1.0]),
         )
         .with_plugin(RenderFlat2D::default())

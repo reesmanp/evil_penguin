@@ -1,7 +1,7 @@
 #![enable(implicit_some)]
 Container(
     transform: (
-        id: "title_background",
+        id: "paused_background",
         anchor: Middle
     ),
     background: SolidColor(0.0, 0.0, 0.0, 1.0),
@@ -17,8 +17,8 @@ Container(
                 width: 500.0
             ),
             text: (
-                text: "Evil Penguin",
-                font_size: 50,
+                text: "GAME PAUSED",
+                font_size: 40,
                 color: (1.0, 1.0, 1.0, 1.0),
                 align: Middle
             )
@@ -34,7 +34,7 @@ Container(
                 width: 500.0
             ),
             text: (
-                text: "<< Press ENTER to continue >>",
+                text: "<< Press ESCAPE to resume playing >>",
                 font_size: 20,
                 color: (1.0, 1.0, 1.0, 1.0)
             )

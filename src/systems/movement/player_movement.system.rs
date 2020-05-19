@@ -27,12 +27,12 @@ impl<'a> System<'a> for PlayerMovementSystem {
         Read<'a, AssetStorage<SpriteSheet>>
     );
 
-    fn run(&mut self, (player, sprite_renders, mut transform, mut movement, input, time, spritesheet_storage): Self::SystemData) {
-        let (player_transform, player_movement, player_sprite_render, _) = (&mut transform, &mut movement, &sprite_renders, &player).join().next().unwrap();
-
-        if let Some(spritesheet) = spritesheet_storage.get(&player_sprite_render.sprite_sheet) {
-            let player_sprite = spritesheet.sprites.get(0).unwrap();
-            self.transform_entity(player_transform, &input, &time, player_movement, player_sprite);
+    fn run(&mut self, (player, sprite_renders, mut transform, mut movement, input, time, sprite_sheet_storage): Self::SystemData) {
+        if let Some((player_transform, player_movement, player_sprite_render, _)) = (&mut transform, &mut movement, &sprite_renders, &player).join().next() {
+            if let Some(sprite_sheet) = sprite_sheet_storage.get(&player_sprite_render.sprite_sheet) {
+                let player_sprite = sprite_sheet.sprites.get(0).unwrap();
+                self.transform_entity(player_transform, &input, &time, player_movement, player_sprite);
+            }
         }
     }
 }

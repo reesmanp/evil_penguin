@@ -30,14 +30,15 @@ impl<'a> System<'a> for PenguinMovementSystem {
     );
 
     fn run(&mut self, (penguin, player, sprite_renders, mut transform, mut movement, time, spritesheet_storage): Self::SystemData) {
-        let (player_transform, _) = (&transform, &player).join().next().unwrap();
-        let player_translation = player_transform.translation().clone();
-        let (penguin_transform, penguin_movement, penguin_sprite_render, _) = (&mut transform, &mut movement, &sprite_renders, &penguin).join().next().unwrap();
-        let penguin_translation = penguin_transform.translation().clone();
+        if let Some((player_transform, _)) = (&transform, &player).join().next() {
+            let player_translation = player_transform.translation().clone();
+            let (penguin_transform, penguin_movement, penguin_sprite_render, _) = (&mut transform, &mut movement, &sprite_renders, &penguin).join().next().unwrap();
+            let penguin_translation = penguin_transform.translation().clone();
 
-        if let Some(penguin_spritesheet) = spritesheet_storage.get(&penguin_sprite_render.sprite_sheet) {
-            let penguin_sprite = penguin_spritesheet.sprites.get(0).unwrap();
-            self.transform_entity(penguin_transform, &(player_translation, penguin_translation), &time, penguin_movement, penguin_sprite);
+            if let Some(penguin_spritesheet) = spritesheet_storage.get(&penguin_sprite_render.sprite_sheet) {
+                let penguin_sprite = penguin_spritesheet.sprites.get(0).unwrap();
+                self.transform_entity(penguin_transform, &(player_translation, penguin_translation), &time, penguin_movement, penguin_sprite);
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 use amethyst::{
     assets::ProgressCounter,
-    ecs::{Dispatcher, DispatcherBuilder, Entity},
+    ecs::{Dispatcher, DispatcherBuilder},
     input::{VirtualKeyCode, is_key_down},
     prelude::*,
     ui::FontHandle
@@ -14,18 +14,17 @@ use crate::{
         menu::BaseMenuState
     },
     systems::menu::MenuBlinkSystem,
-    util::constants::PAUSED_MENU_RON_PATH
+    util::constants::WIN_MENU_RON_PATH
 };
 
 #[derive(Default)]
-pub struct PausedState<'a, 'b> {
-    container_entity: Option<Entity>,
+pub struct WinMenuState<'a, 'b> {
     font: Option<FontHandle>,
     dispatcher: Option<Dispatcher<'a, 'b>>,
     progress_counter: ProgressCounter
 }
 
-impl<'a, 'b> SimpleState for PausedState<'a, 'b> {
+impl<'a, 'b> SimpleState for WinMenuState<'a, 'b> {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
@@ -34,20 +33,18 @@ impl<'a, 'b> SimpleState for PausedState<'a, 'b> {
 
         self.dispatcher = self.initialize_dispatcher(world, dispatcher_builder);
         self.font = self.initialize_font(world);
-        self.container_entity = self.initialize_menu(world, PAUSED_MENU_RON_PATH);
+        self.initialize_menu(world, WIN_MENU_RON_PATH);
+        self.initialize_camera(world);
     }
 
     fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        if let Some(entity) = self.container_entity {
-            data.world.delete_entity(entity).unwrap();
-            self.container_entity = None;
-        }
+        data.world.delete_all();
     }
 
     fn handle_event(&mut self, _data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
         if let StateEvent::Window(e) = &event {
-            if is_key_down(&e, VirtualKeyCode::Escape) {
-                return Trans::Switch(Box::new(LoadingState::new(NextLoadingState::UnPaused)));
+            if is_key_down(&e, VirtualKeyCode::Return) || is_key_down(&e, VirtualKeyCode::NumpadEnter) {
+                return Trans::Switch(Box::new(LoadingState::new(NextLoadingState::Run)));
             }
         }
 
@@ -65,10 +62,10 @@ impl<'a, 'b> SimpleState for PausedState<'a, 'b> {
     }
 }
 
-impl<'a, 'b> BaseState for PausedState<'a,'b> {
+impl<'a, 'b> BaseState for WinMenuState<'a,'b> {
 }
 
-impl<'a, 'b> BaseMenuState<'_, '_> for PausedState<'a, 'b> {
+impl<'a, 'b> BaseMenuState<'_, '_> for WinMenuState<'a, 'b> {
     fn get_progress_counter(&mut self) -> &mut ProgressCounter {
         &mut self.progress_counter
     }

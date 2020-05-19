@@ -1,10 +1,10 @@
 use amethyst::{
-    assets::{Handle, Loader, AssetStorage, ProgressCounter},
+    assets::{Handle, ProgressCounter},
     core::{ArcThreadPool, Transform, math::base::Vector3},
     prelude::*,
     input::{VirtualKeyCode, is_key_down},
     ecs::{Dispatcher, DispatcherBuilder, Join},
-    renderer::{SpriteSheet, SpriteRender, Texture, ImageFormat, SpriteSheetFormat}
+    renderer::{SpriteSheet, SpriteRender}
 };
 
 use crate::{
@@ -21,6 +21,8 @@ use crate::{
     },
     states::{
         BaseState,
+        LoadingState,
+        NextLoadingState,
         PausedState
     },
     systems::{
@@ -45,6 +47,7 @@ use crate::{
             COIN_SPRITE_SHEET_PATH,
             COIN_RON_PATH,
             COIN_SPRITES_AMOUNT,
+            COIN_TIME_PER_FRAME,
             PENGUIN_SPRITE_SHEET_PATH,
             PENGUIN_RON_PATH,
             PLAYER_SPRITE_SHEET_PATH,
@@ -55,8 +58,11 @@ use crate::{
     }
 };
 use std::collections::HashMap;
-use crate::states::{LoadingState, NextLoadingState};
 
+/// Run State
+///
+/// State in charge of the main game
+/// Initializes -> Player, Penguin, Coins
 pub struct RunState<'a, 'b> {
     coins: usize,
     coins_per_row: usize,
@@ -80,10 +86,14 @@ impl<'a, 'b> SimpleState for RunState<'a, 'b> {
         self.initialize_end_condition(world);
     }
 
+    fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>) {
+        data.world.delete_all();
+    }
+
     fn handle_event(&mut self, _data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
         if let StateEvent::Window(e) = &event {
             if is_key_down(&e, VirtualKeyCode::Escape) {
-                return Trans::Push(Box::new(PausedState));
+                return Trans::Push(Box::new(LoadingState::new(NextLoadingState::Paused)));
             }
         }
 
@@ -97,17 +107,14 @@ impl<'a, 'b> SimpleState for RunState<'a, 'b> {
             }
 
             let end_condition_storage = &data.world.read_storage::<EndConditionComponent>();
-            let end_condition = (end_condition_storage).join().next().unwrap();
-            if let Some(is_win) = end_condition.is_win {
-                return Trans::Switch(Box::new(LoadingState::new(NextLoadingState::EndMenu(is_win))))
+            if let Some(end_condition) = (end_condition_storage).join().next() {
+                if let Some(is_win) = end_condition.is_win {
+                    return Trans::Switch(Box::new(LoadingState::new(NextLoadingState::EndMenu(is_win))))
+                }
             }
         }
 
         Trans::None
-    }
-
-    fn on_stop(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        data.world.delete_all();
     }
 }
 
@@ -178,6 +185,7 @@ impl<'a, 'b> RunState<'a, 'b> {
 
             let mut coin = CoinComponent::default();
             coin.frames = COIN_SPRITES_AMOUNT;
+            coin.time_per_frame = COIN_TIME_PER_FRAME;
 
             world
                 .create_entity()

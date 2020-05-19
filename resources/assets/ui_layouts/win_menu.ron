@@ -1,7 +1,7 @@
 #![enable(implicit_some)]
 Container(
     transform: (
-        id: "background",
+        id: "win_background",
         anchor: Middle
     ),
     background: SolidColor(0.0, 0.0, 0.0, 1.0),
@@ -25,7 +25,7 @@ Container(
         ),
         Label(
             transform: (
-                id: "text",
+                id: "blink",
                 anchor: Middle,
                 x: 0.0,
                 y: 0.0,

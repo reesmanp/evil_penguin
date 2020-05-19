@@ -28,24 +28,24 @@ impl<'a> System<'a> for CoinCollectionSystem {
     );
 
     fn run(&mut self, (player, coins, transform, sprite_renders, spritesheet_storage, entities): Self::SystemData) {
-        let (player_transform, player_sprite_render, _) = (&transform, &sprite_renders, &player).join().next().unwrap();
+        if let Some((player_transform, player_sprite_render, _)) = (&transform, &sprite_renders, &player).join().next() {
+            if let Some((coin_sprite_render, _)) = (&sprite_renders, &coins).join().next() {
+                // Get spritesheets
+                if let (Some(player_spritesheet), Some(coin_spritesheet)) = (
+                    spritesheet_storage.get(&player_sprite_render.sprite_sheet),
+                    spritesheet_storage.get(&coin_sprite_render.sprite_sheet)
+                ) {
+                    for (coin_entity, coin_transform, _) in (&*entities, &transform, &coins).join() {
+                        let player_sprite = player_spritesheet.sprites.get(0).unwrap();
+                        let coin_sprite = coin_spritesheet.sprites.get(0).unwrap();
 
-        if let Some((coin_sprite_render, _)) = (&sprite_renders, &coins).join().next() {
-            // Get spritesheets
-            if let (Some(player_spritesheet), Some(coin_spritesheet)) = (
-                spritesheet_storage.get(&player_sprite_render.sprite_sheet),
-                spritesheet_storage.get(&coin_sprite_render.sprite_sheet)
-            ) {
-                for (coin_entity, coin_transform, _) in (&*entities, &transform, &coins).join() {
-                    let player_sprite = player_spritesheet.sprites.get(0).unwrap();
-                    let coin_sprite = coin_spritesheet.sprites.get(0).unwrap();
+                        // Get entity coordinates
+                        let player_coords = get_sprite_coordinates(player_transform, player_sprite);
+                        let coin_coords = get_sprite_coordinates(coin_transform, coin_sprite);
 
-                    // Get entity coordinates
-                    let player_coords = get_sprite_coordinates(player_transform, player_sprite);
-                    let coin_coords = get_sprite_coordinates(coin_transform, coin_sprite);
-
-                    if is_collision(player_coords, coin_coords) {
-                        entities.delete(coin_entity).unwrap();
+                        if is_collision(player_coords, coin_coords) {
+                            entities.delete(coin_entity).unwrap();
+                        }
                     }
                 }
             }

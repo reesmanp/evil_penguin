@@ -15,21 +15,6 @@ pub struct CoinComponent {
 }
 
 impl CoinComponent {
-    pub fn new(
-        frame: usize,
-        frames: usize,
-        time_per_frame: f32,
-        time_elapsed: f32
-    ) -> Self
-    {
-        Self {
-            frame,
-            frames,
-            time_per_frame,
-            time_elapsed
-        }
-    }
-
     pub fn elapse_time(&mut self, time: f32) {
         self.time_elapsed += time;
     }

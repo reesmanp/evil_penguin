@@ -9,6 +9,7 @@ pub const CONFIG_PATH: &str = const_concat!(RESOURCES_PATH, "/", "config");
 // ASSET PATHS
 pub const TEXTURES_DIR: &str = "textures";
 pub const FONTS_DIR: &str = "fonts";
+pub const UI_LAYOUTS: &str = "ui_layouts";
 
 // FONT PATHS
 pub const SQUARE_FONT_PATH: &str = const_concat!(FONTS_DIR, "/", "square.ttf");
@@ -44,3 +45,9 @@ pub const PLAYER_RON_PATH: &str = const_concat!(PLAYER_PATH, "/", "player_sprite
 
 // MOVEMENT CONSTANTS
 pub const DEFAULT_FRICTION: f32 = 2.0;
+
+// MENU CONSTANTS
+pub const LOSE_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "lose_menu.ron");
+pub const PAUSED_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "paused_menu.ron");
+pub const TITLE_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "title_menu.ron");
+pub const WIN_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "win_menu.ron");
