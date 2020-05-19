@@ -1,10 +1,19 @@
 [package]
 name = "evil_penguin"
-version = "0.7.0"
+version = "0.8.0"
 authors = ["Paul Reesman <paul.r.reesman@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-amethyst = { version = "^0.15.0", features = ["vulkan"] }
 const-concat = { git = "https://github.com/reesmanp/const-concat" }
 serde = { version = "1.0", features = ["derive"] }
+
+[target.'cfg(target_os = "windows")'.dependencies.amethyst]
+version = "^0.15.0"
+default-features = false
+features = ["vulkan"]
+
+[target.'cfg(target_os = "macos")'.dependencies.amethyst]
+version = "^0.15.0"
+default-features = false
+features = ["metal"]

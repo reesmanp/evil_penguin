@@ -1,11 +1,17 @@
 language: rust
 os:
   - osx
-  - linux
+  - windows
 branches:
   only:
     - master
 rust:
   - nightly
+addons:
+  artifacts:
+    s3_region: "us-west-2"
+    paths:
+      - "./target"
+      - "./resources"
 script:
-  cargo build --release
+  cargo build -Z features=itarget --release
