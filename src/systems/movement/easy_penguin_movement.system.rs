@@ -16,9 +16,9 @@ use crate::{
     systems::movement::EntityMovement
 };
 
-pub struct PenguinMovementSystem;
+pub struct EasyPenguinMovementSystem;
 
-impl<'a> System<'a> for PenguinMovementSystem {
+impl<'a> System<'a> for EasyPenguinMovementSystem {
     type SystemData = (
         ReadStorage<'a, PenguinComponent>,
         ReadStorage<'a, PlayerComponent>,
@@ -29,21 +29,21 @@ impl<'a> System<'a> for PenguinMovementSystem {
         Read<'a, AssetStorage<SpriteSheet>>
     );
 
-    fn run(&mut self, (penguin, player, sprite_renders, mut transform, mut movement, time, spritesheet_storage): Self::SystemData) {
+    fn run(&mut self, (penguin, player, sprite_renders, mut transform, mut movement, time, sprite_sheet_storage): Self::SystemData) {
         if let Some((player_transform, _)) = (&transform, &player).join().next() {
             let player_translation = player_transform.translation().clone();
             let (penguin_transform, penguin_movement, penguin_sprite_render, _) = (&mut transform, &mut movement, &sprite_renders, &penguin).join().next().unwrap();
             let penguin_translation = penguin_transform.translation().clone();
 
-            if let Some(penguin_spritesheet) = spritesheet_storage.get(&penguin_sprite_render.sprite_sheet) {
-                let penguin_sprite = penguin_spritesheet.sprites.get(0).unwrap();
+            if let Some(penguin_sprite_sheet) = sprite_sheet_storage.get(&penguin_sprite_render.sprite_sheet) {
+                let penguin_sprite = penguin_sprite_sheet.sprites.get(0).unwrap();
                 self.transform_entity(penguin_transform, &(player_translation, penguin_translation), &time, penguin_movement, penguin_sprite);
             }
         }
     }
 }
 
-impl EntityMovement for PenguinMovementSystem {
+impl EntityMovement for EasyPenguinMovementSystem {
     type AccelerationDirection = (
         Vector3<f32>,
         Vector3<f32>

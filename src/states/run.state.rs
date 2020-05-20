@@ -34,7 +34,9 @@ use crate::{
             EndConditionSystem
         },
         movement::{
-            PenguinMovementSystem,
+            EasyPenguinMovementSystem,
+            Difficulty,
+            MediumPenguinMovementSystem,
             PlayerMovementSystem
         }
     },
@@ -58,6 +60,7 @@ use crate::{
     }
 };
 use std::collections::HashMap;
+use crate::systems::movement::HardPenguinMovementSystem;
 
 /// Run State
 ///
@@ -70,7 +73,8 @@ pub struct RunState<'a, 'b> {
     progress_counter: ProgressCounter,
     coin_texture_handle: Option<Handle<SpriteSheet>>,
     penguin_texture_handle: Option<Handle<SpriteSheet>>,
-    player_texture_handle: Option<Handle<SpriteSheet>>
+    player_texture_handle: Option<Handle<SpriteSheet>>,
+    difficulty: Difficulty
 }
 
 impl<'a, 'b> SimpleState for RunState<'a, 'b> {
@@ -127,7 +131,8 @@ impl<'a, 'b> RunState<'a, 'b> {
             progress_counter: ProgressCounter::new(),
             coin_texture_handle: None,
             penguin_texture_handle: None,
-            player_texture_handle: None
+            player_texture_handle: None,
+            difficulty: Difficulty::Easy
         }
     }
 
@@ -137,9 +142,15 @@ impl<'a, 'b> RunState<'a, 'b> {
 
     fn initialize_dispatcher(&mut self, world: &mut World) {
         let mut dispatcher_builder = DispatcherBuilder::new();
-        dispatcher_builder.add(CoinRotationSystem, "coin_rotation_system", &[]);
         dispatcher_builder.add(PlayerMovementSystem, "player_movement_system", &[]);
-        dispatcher_builder.add(PenguinMovementSystem, "penguin_movement_system", &["player_movement_system"]);
+
+        match self.difficulty {
+            Difficulty::Easy => dispatcher_builder.add(EasyPenguinMovementSystem, "penguin_movement_system", &["player_movement_system"]),
+            Difficulty::Medium => dispatcher_builder.add(MediumPenguinMovementSystem, "penguin_movement_system", &["player_movement_system"]),
+            Difficulty::Hard => dispatcher_builder.add(HardPenguinMovementSystem, "penguin_movement_system", &["player_movement_system"])
+        }
+
+        dispatcher_builder.add(CoinRotationSystem, "coin_rotation_system", &[]);
         dispatcher_builder.add(CoinCollectionSystem, "coin_collection_system", &["player_movement_system"]);
         dispatcher_builder.add(EndConditionSystem, "end_condition_system", &["penguin_movement_system", "coin_collection_system"]);
 
@@ -220,6 +231,10 @@ impl<'a, 'b> RunState<'a, 'b> {
             .create_entity()
             .with(EndConditionComponent::default())
             .build();
+    }
+
+    pub fn set_difficulty(&mut self, difficulty: Difficulty) {
+        self.difficulty = difficulty;
     }
 }
 

@@ -44,7 +44,7 @@ impl<'a, 'b> SimpleState for LoseMenuState<'a, 'b> {
     fn handle_event(&mut self, _data: StateData<'_, GameData<'_, '_>>, event: StateEvent) -> SimpleTrans {
         if let StateEvent::Window(e) = &event {
             if is_key_down(&e, VirtualKeyCode::Return) || is_key_down(&e, VirtualKeyCode::NumpadEnter) {
-                return Trans::Switch(Box::new(LoadingState::new(NextLoadingState::Run)));
+                return Trans::Switch(Box::new(LoadingState::new(NextLoadingState::MainMenu)));
             }
         }
 

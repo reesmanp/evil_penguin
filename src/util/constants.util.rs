@@ -48,6 +48,7 @@ pub const DEFAULT_FRICTION: f32 = 2.0;
 
 // MENU CONSTANTS
 pub const LOSE_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "lose_menu.ron");
+pub const MAIN_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "main_menu.ron");
 pub const PAUSED_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "paused_menu.ron");
 pub const TITLE_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "title_menu.ron");
 pub const WIN_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "win_menu.ron");

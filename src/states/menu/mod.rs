@@ -1,5 +1,7 @@
 #[path = "lose_menu.state.rs"]
 mod lose_menu_state;
+#[path = "main_menu.state.rs"]
+mod main_menu_state;
 #[path = "start_menu.state.rs"]
 mod start_menu_state;
 #[path = "win_menu.state.rs"]
@@ -7,6 +9,7 @@ mod win_menu_state;
 
 pub use self::{
     lose_menu_state::LoseMenuState,
+    main_menu_state::MainMenuState,
     start_menu_state::StartMenuState,
     win_menu_state::WinMenuState
 };

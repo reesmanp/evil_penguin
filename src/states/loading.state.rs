@@ -16,10 +16,12 @@ use crate::{
         RunState,
         menu::{
             LoseMenuState,
+            MainMenuState,
             StartMenuState,
             WinMenuState
         }
     },
+    systems::movement::Difficulty,
     util::types::SpritesheetLoadingData
 };
 
@@ -28,7 +30,8 @@ use std::collections::HashMap;
 pub enum NextLoadingState {
     Paused,
     UnPaused,
-    Run,
+    Run(Difficulty),
+    MainMenu,
     StartMenu,
     EndMenu(bool)
 }
@@ -45,12 +48,13 @@ impl SimpleState for LoadingState {
 
         let sprite_sheet_dependencies = match self.next_state {
             NextLoadingState::Paused => PausedState::get_dependent_spritesheets(),
-            NextLoadingState::Run => RunState::get_dependent_spritesheets(),
+            NextLoadingState::Run(_) => RunState::get_dependent_spritesheets(),
             NextLoadingState::StartMenu => StartMenuState::get_dependent_spritesheets(),
             NextLoadingState::EndMenu(is_win) => match is_win {
                 true => WinMenuState::get_dependent_spritesheets(),
                 false => LoseMenuState::get_dependent_spritesheets()
             },
+            NextLoadingState::MainMenu => MainMenuState::get_dependent_spritesheets(),
             _ => vec![]
         };
 
@@ -61,22 +65,24 @@ impl SimpleState for LoadingState {
 
     fn update(&mut self, _data: &mut StateData<GameData>) -> SimpleTrans {
         if self.progress_counter.is_complete() {
-            return match self.next_state {
+            return match &self.next_state {
                 NextLoadingState::Paused => Trans::Switch(Box::new(PausedState::default())),
                 NextLoadingState::UnPaused => Trans::Pop,
-                NextLoadingState::Run => {
+                NextLoadingState::Run(difficulty) => {
                     let mut run_state = RunState::default();
+                    run_state.set_difficulty((*difficulty).clone());
                     run_state.set_dependent_spritesheet_handles(&mut self.loading_assets);
                     Trans::Switch(Box::new(run_state))
                 },
                 NextLoadingState::StartMenu => Trans::None,
                 NextLoadingState::EndMenu(is_win) => {
-                    if is_win {
+                    if *is_win {
                         return Trans::Switch(Box::new(WinMenuState::default()));
                     }
 
                     Trans::Switch(Box::new(LoseMenuState::default()))
-                }
+                },
+                NextLoadingState::MainMenu => Trans::Switch(Box::new(MainMenuState::default()))
             }
         }
 

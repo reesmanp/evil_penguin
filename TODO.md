@@ -3,11 +3,13 @@
 - [x] Player sprite
 - [ ] Main menu
   - [X] Title Menu
-  - [ ] Main Menu
+  - [x] Main Menu
   - [ ] How to Play Menu
   - [ ] Settings Menu
-  - [ ] Play Menu
-- [ ] Pause Menu
+  - [x] Play Menu
+- [x] Pause Menu
 - [x] End game menu
 - [ ] Configurable difficulty
-  - [ ] Machine learned difficulty as hardest
+  - [x] Easy
+  - [x] Medium
+  - [ ] Hard

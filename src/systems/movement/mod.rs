@@ -1,10 +1,16 @@
-#[path = "penguin_movement.system.rs"]
-mod penguin_system;
+#[path = "easy_penguin_movement.system.rs"]
+mod easy_penguin_movement_system;
+#[path = "hard_penguin_movement.system.rs"]
+mod hard_penguin_movement_system;
+#[path = "medium_penguin_movement.system.rs"]
+mod medium_penguin_movement_system;
 #[path = "player_movement.system.rs"]
 mod player_movement_system;
 
 pub use self::{
-    penguin_system::PenguinMovementSystem,
+    easy_penguin_movement_system::EasyPenguinMovementSystem,
+    hard_penguin_movement_system::HardPenguinMovementSystem,
+    medium_penguin_movement_system::MediumPenguinMovementSystem,
     player_movement_system::PlayerMovementSystem
 };
 
@@ -109,4 +115,11 @@ pub trait EntityMovement {
         let new_position = local_transform.translation() + velocity * time.delta_seconds();
         local_transform.prepend_translation(new_position - old_position);
     }
+}
+
+#[derive(Copy, Clone)]
+pub enum Difficulty {
+    Easy,
+    Medium,
+    Hard
 }

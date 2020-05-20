@@ -11,14 +11,14 @@ Container(
                 id: "main_title",
                 anchor: Middle,
                 x: 0.0,
-                y: 100.0,
+                y: 150.0,
                 z: 1.0,
                 height: 100.0,
                 width: 500.0
             ),
             text: (
-                text: "Evil Penguin",
-                font_size: 50,
+                text: "Main Menu",
+                font_size: 40,
                 color: (1.0, 1.0, 1.0, 1.0),
                 align: Middle
             )
@@ -31,6 +31,55 @@ Container(
             background: SolidColor(0.0, 0.0, 0.0, 1.0),
             children: [
                 Button(
+                    transform: (
+                        id: "play_easy",
+                        anchor: Middle,
+                        x: 0.0,
+                        y: 100.0,
+                        z: 1.0,
+                        height: 50.0,
+                        width: 500.0
+                    ),
+                    button: (
+                        id: 0,
+                        text: "Play: Easy",
+                        font_size: 20,
+                        normal_text_color: (1.0, 1.0, 1.0, 1.0)
+                    )
+                ),
+                Button(
+                    transform: (
+                        id: "play_medium",
+                        anchor: Middle,
+                        x: 0.0,
+                        y: 50.0,
+                        z: 1.0,
+                        height: 50.0,
+                        width: 500.0
+                    ),
+                    button: (
+                        id: 1,
+                        text: "Play: Medium",
+                        font_size: 20,
+                        normal_text_color: (1.0, 1.0, 1.0, 1.0)
+                    )
+                ),
+                Button(
+                    transform: (
+                        id: "play_hard",
+                        anchor: Middle,
+                        x: 0.0,
+                        y: 0.0,
+                        z: 1.0,
+                        height: 50.0,
+                        width: 500.0
+                    ),
+                    button: (
+                        id: 2,
+                        text: "Play: Hard",
+                        font_size: 20,
+                        normal_text_color: (1.0, 1.0, 1.0, 1.0)
+                    )
                 )
             ]
         )
