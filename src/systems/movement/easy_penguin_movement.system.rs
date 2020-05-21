@@ -49,7 +49,7 @@ impl EntityMovement for EasyPenguinMovementSystem {
         Vector3<f32>
     );
 
-    fn get_acceleration(&self, input: &Self::AccelerationDirection) -> Vector3<f32> {
+    fn get_acceleration(&mut self, input: &Self::AccelerationDirection) -> Vector3<f32> {
         (input.0 - input.1).normalize() * 5.0
     }
 }

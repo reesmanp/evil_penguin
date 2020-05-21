@@ -19,7 +19,7 @@ use crate::{
             DEFAULT_ARENA_WIDTH,
             DEFAULT_ARENA_HEIGHT
         },
-        types::SpritesheetLoadingData
+        types::SpriteSheetLoadingData
     }
 };
 
@@ -46,7 +46,7 @@ pub trait BaseState {
             .build();
     }
 
-    fn get_dependent_spritesheets() -> Vec<SpritesheetLoadingData<'static>> {
+    fn get_dependent_spritesheets() -> Vec<SpriteSheetLoadingData<'static>> {
         vec![]
     }
 

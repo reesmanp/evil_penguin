@@ -8,6 +8,8 @@ use amethyst::{
 #[derive(Component, Default)]
 #[storage(VecStorage)]
 pub struct CoinComponent {
+    pub id: usize,
+    pub total_amount: usize,
     pub frame: usize,
     pub frames: usize,
     pub time_per_frame: f32,

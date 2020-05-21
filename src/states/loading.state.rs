@@ -22,7 +22,7 @@ use crate::{
         }
     },
     systems::movement::Difficulty,
-    util::types::SpritesheetLoadingData
+    util::types::SpriteSheetLoadingData
 };
 
 use std::collections::HashMap;
@@ -102,7 +102,7 @@ impl LoadingState {
     fn load_sprite_sheet(
         &mut self,
         world: &mut World,
-        (sprite_name, sprite_sheet_path, ron_path): SpritesheetLoadingData
+        (sprite_name, sprite_sheet_path, ron_path): SpriteSheetLoadingData
     ) {
         let texture_handle = {
             let loader = world.read_resource::<Loader>();

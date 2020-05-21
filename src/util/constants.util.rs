@@ -52,3 +52,7 @@ pub const MAIN_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "main_menu.r
 pub const PAUSED_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "paused_menu.ron");
 pub const TITLE_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "title_menu.ron");
 pub const WIN_MENU_RON_PATH: &str = const_concat!(UI_LAYOUTS, "/", "win_menu.ron");
+
+// NEURAL NETWORK CONSTANTS
+pub const DEFAULT_NUM_OF_WEIGHTS: usize = 2;
+pub const DEFAULT_LEARNING_RATE: f32 = 1.5;

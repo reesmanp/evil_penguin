@@ -40,7 +40,7 @@ impl<'a> System<'a> for PlayerMovementSystem {
 impl EntityMovement for PlayerMovementSystem {
     type AccelerationDirection = InputHandler<StringBindings>;
 
-    fn get_acceleration(&self, input: &Self::AccelerationDirection) -> Vector3<f32> {
+    fn get_acceleration(&mut self, input: &Self::AccelerationDirection) -> Vector3<f32> {
         // Direction of acceleration force vectors, normalized
         let x_direction = match input.axis_value("horizontal") {
             Some(x) => x as f32,

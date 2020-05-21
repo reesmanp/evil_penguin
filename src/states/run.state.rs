@@ -19,6 +19,7 @@ use crate::{
             MovementComponent
         }
     },
+    ml::neural_network::NeuralNetwork,
     states::{
         BaseState,
         LoadingState,
@@ -36,6 +37,7 @@ use crate::{
         movement::{
             EasyPenguinMovementSystem,
             Difficulty,
+            HardPenguinMovementSystem,
             MediumPenguinMovementSystem,
             PlayerMovementSystem
         }
@@ -54,13 +56,13 @@ use crate::{
             PENGUIN_RON_PATH,
             PLAYER_SPRITE_SHEET_PATH,
             PLAYER_RON_PATH,
-            DEFAULT_FRICTION
+            DEFAULT_FRICTION,
+            DEFAULT_LEARNING_RATE
         },
-        types::SpritesheetLoadingData
+        types::SpriteSheetLoadingData
     }
 };
 use std::collections::HashMap;
-use crate::systems::movement::HardPenguinMovementSystem;
 
 /// Run State
 ///
@@ -147,7 +149,11 @@ impl<'a, 'b> RunState<'a, 'b> {
         match self.difficulty {
             Difficulty::Easy => dispatcher_builder.add(EasyPenguinMovementSystem, "penguin_movement_system", &["player_movement_system"]),
             Difficulty::Medium => dispatcher_builder.add(MediumPenguinMovementSystem, "penguin_movement_system", &["player_movement_system"]),
-            Difficulty::Hard => dispatcher_builder.add(HardPenguinMovementSystem, "penguin_movement_system", &["player_movement_system"])
+            Difficulty::Hard => {
+                let mut hard_penguin_movement_system = HardPenguinMovementSystem::default();
+                hard_penguin_movement_system.coin_amount = self.coins;
+                dispatcher_builder.add(hard_penguin_movement_system, "penguin_movement_system", &["player_movement_system"])
+            }
         }
 
         dispatcher_builder.add(CoinRotationSystem, "coin_rotation_system", &[]);
@@ -195,6 +201,8 @@ impl<'a, 'b> RunState<'a, 'b> {
             transform.set_scale(Vector3::new(0.33, 0.33, 1.0));
 
             let mut coin = CoinComponent::default();
+            coin.id = i;
+            coin.total_amount = self.coins;
             coin.frames = COIN_SPRITES_AMOUNT;
             coin.time_per_frame = COIN_TIME_PER_FRAME;
 
@@ -248,7 +256,7 @@ impl<'a, 'b> Default for RunState<'a, 'b> {
 }
 
 impl<'a, 'b> BaseState for RunState<'a, 'b> {
-    fn get_dependent_spritesheets() -> Vec<SpritesheetLoadingData<'static>> {
+    fn get_dependent_spritesheets() -> Vec<SpriteSheetLoadingData<'static>> {
         vec![
             ("coin", COIN_SPRITE_SHEET_PATH, COIN_RON_PATH),
             ("penguin", PENGUIN_SPRITE_SHEET_PATH, PENGUIN_RON_PATH),

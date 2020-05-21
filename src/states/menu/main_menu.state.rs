@@ -52,6 +52,8 @@ impl<'a, 'b> SimpleState for MainMenuState<'a, 'b> {
                 } else if Some(ui_event.target) == hard {
                     return Trans::Switch(Box::new(LoadingState::new(NextLoadingState::Run(Difficulty::Hard))))
                 }
+            } else if ui_event.event_type == UiEventType::HoverStart {
+                // TODO: change cursor
             }
         }
 

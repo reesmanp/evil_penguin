@@ -34,7 +34,7 @@ use amethyst::{
 pub trait EntityMovement {
     type AccelerationDirection;
 
-    fn get_acceleration(&self, input: &Self::AccelerationDirection) -> Vector3<f32>;
+    fn get_acceleration(&mut self, input: &Self::AccelerationDirection) -> Vector3<f32>;
 
     fn calculate_new_velocity(&self, velocity: &Vector3<f32>, acceleration: &Vector3<f32>, friction: &Vector3<f32>, max_speed: f32) -> Vector3<f32> {
         let mut new_velocity = velocity.clone();
@@ -101,7 +101,7 @@ pub trait EntityMovement {
         friction_vector
     }
 
-    fn transform_entity(&self, local_transform: &mut Transform, input: &Self::AccelerationDirection, time: &Time, movement: &mut MovementComponent, sprite: &Sprite) {
+    fn transform_entity(&mut self, local_transform: &mut Transform, input: &Self::AccelerationDirection, time: &Time, movement: &mut MovementComponent, sprite: &Sprite) {
         let acceleration = self.get_acceleration(input);
         let friction_vector = self.get_friction_direction_vector(&movement.velocity, movement.friction);
         let new_velocity = self.calculate_new_velocity(&movement.velocity, &acceleration, &friction_vector, movement.max_speed);

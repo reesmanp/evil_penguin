@@ -63,7 +63,7 @@ impl EntityMovement for MediumPenguinMovementSystem {
         Vector3<f32>
     );
 
-    fn get_acceleration(&self, input: &Self::AccelerationDirection) -> Vector3<f32> {
+    fn get_acceleration(&mut self, input: &Self::AccelerationDirection) -> Vector3<f32> {
         // Find vector to actual tip of player acceleration
         let real_player_vector = input.0 + input.2;
         (real_player_vector - input.1).normalize() * 5.0
